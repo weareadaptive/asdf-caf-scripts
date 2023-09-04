@@ -2,8 +2,9 @@
 
 set -euo pipefail
 
-GH_REPO="https://gitlab.com/weareadaptive/adaptive/common/caf-scripts"
+GH_REPO="https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts"
 TOOL_NAME="caf-scripts"
+RELEASE_NAME="asdf-caf-scripts"
 TOOL_TEST="caf-scripts"
 
 fail() {
@@ -36,15 +37,12 @@ list_all_versions() {
 }
 
 download_release() {
-	local version filename url
-	version="$1"
-	filename="$2"
+	local version directory
+	version="${1}"
+	directory="${2}"
 
-	# TODO: Adapt the release URL convention for caf-scripts
-	url="$GH_REPO/archive/v${version}.tar.gz"
-
-	echo "* Downloading $TOOL_NAME release $version..."
-	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
+	echo "* Downloading ${TOOL_NAME} release ${version}..."
+	glab release download "v${version}" --repo "${GH_REPO}" --asset-name "*.tar.gz" --dir "${directory}"
 }
 
 install_version() {
@@ -58,12 +56,7 @@ install_version() {
 
 	(
 		mkdir -p "$install_path"
-		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
-
-		# TODO: Assert caf-scripts executable exists.
-		local tool_cmd
-		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
-		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
+		cp -r "$ASDF_DOWNLOAD_PATH"/scripts/* "$install_path"
 
 		echo "$TOOL_NAME $version installation was successful!"
 	) || (
