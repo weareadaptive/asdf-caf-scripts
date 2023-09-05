@@ -2,13 +2,13 @@
 stages:
   - release
 
-release:
+release-tag:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
     - if: $CI_COMMIT_TAG   # run this job when a tag is created
   script:
-    - echo "running release job..."
+    - echo "running release job for $CI_COMMIT_TAG..."
   release:    # see https://docs.gitlab.com/ee/ci/yaml/#release for available properties
     tag_name: $CI_COMMIT_TAG
     description: "$CI_COMMIT_TAG"
