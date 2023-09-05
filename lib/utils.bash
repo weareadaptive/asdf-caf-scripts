@@ -2,10 +2,8 @@
 
 set -euo pipefail
 
-GH_REPO="https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts"
+GITLAB_REPO="https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts"
 TOOL_NAME="caf-scripts"
-RELEASE_NAME="asdf-caf-scripts"
-TOOL_TEST="caf-scripts"
 
 fail() {
 	echo -e "asdf-$TOOL_NAME: $*"
@@ -25,7 +23,7 @@ sort_versions() {
 }
 
 list_github_tags() {
-	git ls-remote --tags --refs "$GH_REPO" |
+	git ls-remote --tags --refs "$GITLAB_REPO" |
 		grep -o 'refs/tags/.*' | cut -d/ -f3- |
 		sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
 }
@@ -42,7 +40,7 @@ download_release() {
 	directory="${2}"
 
 	echo "* Downloading ${TOOL_NAME} release ${version}..."
-	glab release download "v${version}" --repo "${GH_REPO}" --asset-name "*.tar.gz" --dir "${directory}"
+	glab release download "v${version}" --repo "${GITLAB_REPO}" --asset-name "*.tar.gz" --dir "${directory}"
 }
 
 install_version() {
@@ -63,4 +61,22 @@ install_version() {
 		rm -rf "$install_path"
 		fail "An error occurred while installing $TOOL_NAME $version."
 	)
+}
+
+verify_glab_auth() {
+	local gitlab_config_path
+
+	echo "Verifying if glab is authenticated to Gitlab..."
+	gitlab_config_path="$HOME/.config/glab-cli/config.yml"
+
+	if [[ "$(yq '.hosts."gitlab.com".token' "${gitlab_config_path}")" == "null" ]]; then
+	  cat <<EOF
+ERROR: glab is not authenticated to Gitlab. Please authenticate:
+- 'glab auth login'
+- choose options: 'gitlab.com', 'Web' authentication
+- follow instructions in the browser and 'HTTPS' as the preferred protocol
+- run 'direnv reload'
+EOF
+	  exit 1
+	fi
 }

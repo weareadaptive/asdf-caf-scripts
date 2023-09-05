@@ -2,7 +2,7 @@
 
 # asdf-caf-scripts
 
-[caf-scripts](https://gitlab.com/weareadaptive/adaptive/common/caf-scripts) plugin for the [asdf version manager](https://asdf-vm.com).
+[caf-scripts](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -13,10 +13,8 @@
 
 # Dependencies
 
-**TODO: adapt this section**
-
 - `bash`, `curl`, `tar`: generic POSIX utilities.
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
+- `glab`
 
 # Install
 
@@ -25,7 +23,7 @@ Plugin:
 ```shell
 asdf plugin add caf-scripts
 # or
-asdf plugin add caf-scripts https://gitlab.com/weareadaptive/adaptive/common/caf-scripts.git
+asdf plugin add caf-scripts git@gitlab.com:weareadaptive/adaptive/common/asdf-caf-scripts.git
 ```
 
 caf-scripts:
