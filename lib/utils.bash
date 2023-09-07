@@ -71,7 +71,7 @@ verify_glab_auth() {
 	echo "Verifying if glab is authenticated to Gitlab..."
 	gitlab_config_path="$HOME/.config/glab-cli/config.yml"
 
-	if [[ "$(yq '.hosts."gitlab.com".token' "${gitlab_config_path}")" == "null" ]]; then
+	if ! test -e "${gitlab_config_path}" || [[ "$(yq '.hosts."gitlab.com".token' "${gitlab_config_path}")" == "null" ]]; then
 	  cat <<EOF
 ERROR: glab is not authenticated to Gitlab. Please authenticate:
 - 'glab auth login'
