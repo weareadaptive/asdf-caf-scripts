@@ -44,3 +44,16 @@ caf-scripts
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
+
+# Releasing
+
+This plugin follows semantic versioning.
+
+To create a new release, tag a commit with the release version in format `vX.X.X`. e.g.
+
+```
+git tag v1.0.4
+git push --tags
+```
+
+Pushing the tags should publish a new release it in the [Gitlab releases section](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts/-/releases).
