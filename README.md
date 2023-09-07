@@ -45,7 +45,7 @@ caf-scripts
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
 install & manage versions.
 
-# Releasing
+# Release
 
 This plugin follows semantic versioning.
 
@@ -56,4 +56,4 @@ git tag v1.0.4
 git push --tags
 ```
 
-Pushing the tags should publish a new release it in the [Gitlab releases section](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts/-/releases).
+Pushing the tags should publish a new release in the [releases section](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts/-/releases).
