@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Creates supported Kubernetes environments
 
-MEMORY="16"
-K8S_VERSION="v1.26.6"
+CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
+CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.26.8}"
 
 case ${OSTYPE} in
   darwin*)
@@ -25,11 +25,11 @@ case ${OSTYPE} in
         -t vz `# mac native virtualisation` \
         --vz-rosetta `# enable rosetta x86 emulation` \
         -c "${MAX_CPU}" `# CPUs to use` \
-        -m "${MEMORY}" `# Memory to use` \
+        -m "${CAF_LCL_K8S_MEMORY}" `# Memory to use` \
         --network-address `# Assign a network address so we can route to it` \
         --network-driver slirp `# Advanced networking driver - requires socket_vmnet` \
         -k `# enable kubernetes` \
-        --kubernetes-version "${K8S_VERSION}+k3s1"
+        --kubernetes-version "${CAF_LCL_K8S_VERSION}+k3s1"
     fi
 
     ;;
@@ -39,9 +39,9 @@ case ${OSTYPE} in
       true
     else
       minikube start \
-        --kubernetes-version="${K8S_VERSION}" \
+        --kubernetes-version="${CAF_LCL_K8S_VERSION}" \
         --driver="docker" \
-        --memory="${MEMORY}G" \
+        --memory="${CAF_LCL_K8S_MEMORY}G" \
         --cpus="max" \
         --addons="registry" \
         --embed-certs
