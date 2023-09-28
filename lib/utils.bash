@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-GITLAB_REPO="https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts"
+GITLAB_REPO="https://gitlab.com/weareadaptive/adaptive/common/caf/asdf-caf-scripts"
 TOOL_NAME="caf-scripts"
 RELEASE_NAME="asdf-caf-scripts"
 TOOL_NAME="caf-scripts"
