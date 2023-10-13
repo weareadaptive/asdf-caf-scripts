@@ -17,31 +17,38 @@ else
   exit 1
 fi
 
+# Get the info from K8s for what we need to connect to
+declare ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE EMISSARY_NS EMISSARY_SVC DNS_DOMAIN SERVICE_CIDR
+
+ADAPTIVE_DOMAIN="${ADAPTIVE_DOMAIN:-adaptive.local}"
+DNS_DOMAIN="cluster.local"
+
 # Handle different OS
+# On Mac/Orbstack, the IP routing is already set up for us, we just need to sort the DNS
+# On Linux, we need to do both the IP routing and DNS routing
 case ${OSTYPE} in
   darwin*)
 
-    if colima status; then
+    if orbctl status; then
       true
     else
-      echo "Only Colima is supported on OS X ( brew install colima )"
+      echo "Only Orbstack is supported on OS X ( brew install orbstack )"
+      echo "Please make sure orbstack config is created with caf_ scripts"
+      echo "or make sure appropriate resources and direct routing is set"
       exit 1
     fi
 
-    if which ip > /dev/null; then
-      true
-    else
-      echo "Please install ip for Mac: brew install iproute2mac"
-      exit 1
-    fi
-
-    DNS_DOMAIN="cluster.local"
-    SERVICE_CIDR="10.43.0.0/16"
+    SERVICE_CIDR="Orbstack defined"
+    POD_CIDR="Orbstack defined"
+    NODE_IP="Orbstack defined"
+    NODE_INTERFACE="Orbstack defined"
 
     ;;
   linux*)
-    DNS_DOMAIN="$(kubectl get cm kubeadm-config -n kube-system -o jsonpath='{.data.ClusterConfiguration}' | yq '.networking.dnsDomain')"
     SERVICE_CIDR="$(kubectl get cm kubeadm-config -n kube-system -o jsonpath='{.data.ClusterConfiguration}' | yq '.networking.serviceSubnet')"
+    POD_CIDR="$(kubectl get nodes -o jsonpath='{.items[0].spec}' | jq -r ".podCIDR")"
+    NODE_IP="$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[?(@.type=='InternalIP')].address}")"
+    NODE_INTERFACE="$(ip route get "${NODE_IP}" | grep "${NODE_IP}" | awk '{print $3}')"
     true
     ;;
   *)
@@ -50,13 +57,7 @@ case ${OSTYPE} in
     ;;
 esac
 
-# Get the info from K8s for what we need to connect to
-declare ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE EMISSARY_NS EMISSARY_SVC DNS_DOMAIN SERVICE_CIDR
-ADAPTIVE_DOMAIN="${ADAPTIVE_DOMAIN:-adaptive.local}"
-POD_CIDR="$(kubectl get nodes -o jsonpath='{.items[0].spec}' | jq -r ".podCIDR")"
-NODE_IP="$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[?(@.type=='InternalIP')].address}")"
 DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath="{.spec.clusterIP}")"
-NODE_INTERFACE="$(ip route get "${NODE_IP}" | grep "${NODE_IP}" | awk '{print $3}')"
 EMISSARY_NS="$(kubectl get svc -l app.kubernetes.io/name=emissary-ingress -A --no-headers | grep -v admin | awk '{print $1}' || echo 'unknown')"
 EMISSARY_SVC="$(kubectl get svc -l app.kubernetes.io/name=emissary-ingress -A --no-headers | grep -v admin | awk '{print $2}' || echo 'unknown')"
 
@@ -76,8 +77,6 @@ echo "EMISSARY_SVC: ${EMISSARY_SVC:? Not found}"
 function f_cleanup_routing() {
 
   echo -e "\nCleaning up"
-  sudo ip route del "${POD_CIDR}" via "${NODE_IP}"
-  ip route del "${SERVICE_CIDR}" via "${NODE_IP}"
 
   case ${OSTYPE} in
     darwin*)
@@ -85,6 +84,8 @@ function f_cleanup_routing() {
       rm -f "/etc/resolver/${DNS_DOMAIN}"
       ;;
     linux*)
+      ip route del "${POD_CIDR}" via "${NODE_IP}"
+      ip route del "${SERVICE_CIDR}" via "${NODE_IP}"
       resolvectl revert "${NODE_INTERFACE}"
       ;;
     *)
@@ -101,11 +102,8 @@ function f_add_routing() {
   # cleanup on interrupt
   trap f_cleanup_routing INT
 
-  echo "Routing traffic to K8s"
-  ip route add "${POD_CIDR}" via "${NODE_IP}"
-  ip route add "${SERVICE_CIDR}" via "${NODE_IP}"
+  echo "Routing traffic/DNS to K8s"
 
-  echo "Updating system with K8s DNS servers"
   case ${OSTYPE} in
     darwin*)
       mkdir -p '/etc/resolver'
@@ -113,6 +111,8 @@ function f_add_routing() {
       echo "nameserver ${DNS_IP}" > "/etc/resolver/${DNS_DOMAIN}"
       ;;
     linux*)
+      ip route add "${POD_CIDR}" via "${NODE_IP}"
+      ip route add "${SERVICE_CIDR}" via "${NODE_IP}"
       resolvectl dns "${NODE_INTERFACE}" "${DNS_IP}"
       resolvectl domain "${NODE_INTERFACE}" "${ADAPTIVE_DOMAIN}" "${DNS_DOMAIN}"
       ;;
