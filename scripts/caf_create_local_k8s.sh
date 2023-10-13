@@ -2,34 +2,57 @@
 
 # Creates supported Kubernetes environments
 
+set -eo pipefail
+
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
 CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.26.8}"
+
+CAF_RESTART_ORBSTACK=0
+
+# Update Orbstack config and trigger a restart if necessary
+function f_orbctl_update {
+  orbkey="$1"
+  orbval="$2"
+  orbset="$(orbctl config show)"
+  if echo "${orbset}" | grep -q "${orbkey}: ${orbval}"; then
+    true
+  else
+    orbctl config set "${orbkey}" "${orbval}"
+    CAF_RESTART_ORBSTACK=1
+  fi
+
+}
 
 case ${OSTYPE} in
   darwin*)
 
     MAX_CPU="$(sysctl -n hw.ncpu)"
 
-    if which colima > /dev/null; then
+    if which orbctl > /dev/null; then
       true
     else
-      echo "Colima is the only supported Docker / Kubernetes provider for now"
-      echo " installing it with 'brew install colima socket_vmnet'"
-      brew install colima socket_vmnet
+      echo "Orbstack is the only supported Docker / Kubernetes provider for now on Mac"
+      echo " installing it with 'brew install orbstack'"
+      echo " and request a licence through Helpdesk"
+      exit 1
     fi
 
-    if colima status; then
-      true
-    else
-      colima start \
-        -t vz `# mac native virtualisation` \
-        --vz-rosetta `# enable rosetta x86 emulation` \
-        -c "${MAX_CPU}" `# CPUs to use` \
-        -m "${CAF_LCL_K8S_MEMORY}" `# Memory to use` \
-        --network-address `# Assign a network address so we can route to it` \
-        --network-driver slirp `# Advanced networking driver - requires socket_vmnet` \
-        -k `# enable kubernetes` \
-        --kubernetes-version "${CAF_LCL_K8S_VERSION}+k3s1"
+    # Configuration we need in Orbstack
+    f_orbctl_update rosetta true
+    f_orbctl_update setup.use_admin true
+    f_orbctl_update k8s.enable true
+    f_orbctl_update cpu "${MAX_CPU}"
+    f_orbctl_update memory_mib "${CAF_LCL_K8S_MEMORY}384"
+    f_orbctl_update network_proxy auto
+    f_orbctl_update network_bridge true
+    f_orbctl_update docker.set_context true
+    f_orbctl_update k8s.expose_services true
+
+    if [[ "${CAF_RESTART_ORBSTACK}" == "1" ]]; then
+      orbctl stop
+      orbctl start
+      orbctl status
+      echo "Finished restarting"
     fi
 
     ;;
