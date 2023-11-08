@@ -5,8 +5,7 @@
 set -eo pipefail
 
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
-CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.27.4}"
-
+CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.28.3}"
 CAF_RESTART_ORBSTACK=0
 
 # Update Orbstack config and trigger a restart if necessary
@@ -21,53 +20,6 @@ function f_orbctl_update {
     CAF_RESTART_ORBSTACK=1
   fi
 
-}
-
-function apply_custom_corends_config {
-  # The following Corefile configuration file adds a cache block to the CoreDNS configuration.
-  # It sets the success cache TTL to 30 seconds and disables the cache for the cluster.local domain.
-
-  temp_file_path="$(mktemp)"
-  cat <<EOF > "${temp_file_path}"
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: coredns
-  namespace: kube-system
-data:
-  Corefile: |
-    .:53 {
-        log
-        errors
-        health {
-           lameduck 5s
-        }
-        ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-           ttl 30
-        }
-        prometheus :9153
-        hosts {
-           192.168.49.1 host.minikube.internal
-           fallthrough
-        }
-        forward . /etc/resolv.conf {
-           max_concurrent 1000
-        }
-        cache {
-          success 30
-          disable denial cluster.local
-        }
-        loop
-        reload
-        loadbalance
-    }
-EOF
-
-  echo "Patching CoreDNS configuration to disable DNS negative caching for cluster.local domain..."
-  kubectl apply -f "${temp_file_path}" --force
 }
 
 case ${OSTYPE} in
@@ -124,5 +76,22 @@ case ${OSTYPE} in
     ;;
 esac
 
-# Sets the success cache TTL to 30 seconds and disables the cache for the cluster.local domain.
-apply_custom_corends_config
+OLD_COREDNS_CONFIG="$(kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}')"
+# remove existing cache config
+updated_stanza="cache {\n      disable denial cluster.local\n      disable success cluster.local\n    }\n}"
+export NEW_COREDNS_CONFIG
+NEW_COREDNS_CONFIG="$(echo "${OLD_COREDNS_CONFIG}" | sed "s/cache.*/${updated_stanza}/g")"
+
+echo "Checking if DNS caching is disabled for cluster.local subdomain..."
+if kubectl -n kube-system get -o yaml configmap coredns | grep "disable denial cluster.local\|disable success cluster.local" &>/dev/null; then
+    echo "CoreDNS already has caching disabled for cluster.local"
+    true
+else
+    echo "Updating CoreDNS to disable DNS caching on cluster.local..."
+    # Create a patchfile for CoreDNS configmap
+    yq e -n '.data.Corefile = strenv(NEW_COREDNS_CONFIG)' > /tmp/coredns_patch.yml
+    # Apply the patch
+    kubectl patch -n kube-system configmap coredns --patch-file=/tmp/coredns_patch.yml
+    # Restart coredns to apply the config
+    kubectl -n kube-system rollout restart deployment.apps/coredns
+fi
