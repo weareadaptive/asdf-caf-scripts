@@ -2,7 +2,7 @@
 
 # asdf-caf-scripts
 
-[caf-scripts](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts) plugin for the [asdf version manager](https://asdf-vm.com).
+[caf-scripts](https://github.com/AdaptiveConsulting/asdf-caf-scripts) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
 
@@ -23,7 +23,7 @@ Plugin:
 ```shell
 asdf plugin add caf-scripts
 # or
-asdf plugin add caf-scripts git@gitlab.com:weareadaptive/adaptive/common/asdf-caf-scripts.git
+asdf plugin add caf-scripts git@github.com:AdaptiveConsulting/asdf-caf-scripts.git
 ```
 
 caf-scripts:
@@ -56,4 +56,4 @@ git tag v1.0.4
 git push --tags
 ```
 
-Pushing the tags should publish a new release in the [releases section](https://gitlab.com/weareadaptive/adaptive/common/asdf-caf-scripts/-/releases).
+To finalize, create a new release in GitHub's [releases section](https://github.com/AdaptiveConsulting/asdf-caf-scripts/releases).
