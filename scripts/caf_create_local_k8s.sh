@@ -54,6 +54,15 @@ case ${OSTYPE} in
       echo "Finished restarting"
     fi
 
+    # Load metrics server
+    until kubectl cluster-info >/dev/null 2>&1
+    do
+      echo "** ... waiting for Orbstack"
+      sleep 2
+    done
+    echo "** Loading metrics-server"
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
     ;;
   linux*)
 
@@ -65,7 +74,7 @@ case ${OSTYPE} in
         --driver="docker" \
         --memory="${CAF_LCL_K8S_MEMORY}G" \
         --cpus="max" \
-        --addons="registry" \
+        --addons="registry,metrics-server" \
         --embed-certs
     fi
 
@@ -75,6 +84,13 @@ case ${OSTYPE} in
     exit 1
     ;;
 esac
+
+# Check if Coredns is ready
+until kubectl -n kube-system get cm coredns >/dev/null 2>&1
+do
+  echo "** ...Waiting for Coredns"
+  sleep 2
+done
 
 OLD_COREDNS_CONFIG="$(kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}')"
 # remove existing cache config
