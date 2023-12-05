@@ -8,6 +8,35 @@ CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
 CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.28.3}"
 CAF_RESTART_ORBSTACK=0
 
+# check for YQ
+if yq --version > /dev/null 2>&1
+then true
+else
+  echo "No yq available - please install/enable it, usually through direnv/.tool-versions"
+  exit 1
+fi
+
+# check for kubectl
+if kubectl version --client=true > /dev/null 2>&1
+then true
+else
+  echo "No kubectl available - please install/enable it, usually through direnv/.tool-versions"
+  exit 1
+fi
+
+# Waits for a context to be available, then switches to it.
+function f_wait_for_k8s_context {
+
+  my_context="${1}"
+  until kubectl config get-contexts | awk '{print $2}' | grep -q "${my_context}"
+  do
+    echo "** ... waiting for kube-context ${my_context}"
+    sleep 2
+  done
+  kubectl config use-context "${my_context}"
+
+}
+
 # Update Orbstack config and trigger a restart if necessary
 function f_orbctl_update {
   orbkey="$1"
@@ -54,6 +83,8 @@ case ${OSTYPE} in
       echo "Finished restarting"
     fi
 
+    f_wait_for_k8s_context orbstack
+
     # Load metrics server
     until kubectl cluster-info >/dev/null 2>&1
     do
@@ -67,7 +98,7 @@ case ${OSTYPE} in
   linux*)
 
     if minikube status; then
-      true
+      f_wait_for_k8s_context minikube
     else
       minikube start \
         --kubernetes-version="${CAF_LCL_K8S_VERSION}" \
