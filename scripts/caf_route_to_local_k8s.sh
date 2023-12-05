@@ -4,6 +4,34 @@
 
 set -eo pipefail
 
+function f_check_kube_context {
+
+  target_context="${1}"
+  if [[ "$(kubectl config current-context)" == "${target_context}" ]]
+  then true
+  else
+    echo "** Current active kubeconfig context is not the expected: '${target_context}'"
+    echo "** aborting cowardly **"
+    exit 1
+  fi
+}
+
+# check for YQ
+if yq --version > /dev/null 2>&1
+then true
+else
+  echo "No yq available - please install/enable it, usually through direnv/.tool-versions"
+  exit 1
+fi
+
+# check for kubectl
+if kubectl version --client=true > /dev/null 2>&1
+then true
+else
+  echo "No kubectl available - please install/enable it, usually through direnv/.tool-versions"
+  exit 1
+fi
+
 if [[ "${UID}" == 0 ]]; then
   echo "Please don't run this as root, the script will sudo when necessary"
   exit 1
@@ -38,6 +66,8 @@ case ${OSTYPE} in
       exit 1
     fi
 
+    f_check_kube_context orbstack
+
     SERVICE_CIDR="Orbstack defined"
     POD_CIDR="Orbstack defined"
     NODE_IP="Orbstack defined"
@@ -45,6 +75,9 @@ case ${OSTYPE} in
 
     ;;
   linux*)
+
+    f_check_kube_context minikube
+
     SERVICE_CIDR="$(kubectl get cm kubeadm-config -n kube-system -o jsonpath='{.data.ClusterConfiguration}' | yq '.networking.serviceSubnet')"
     POD_CIDR="$(kubectl get nodes -o jsonpath='{.items[0].spec}' | jq -r ".podCIDR")"
     NODE_IP="$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[?(@.type=='InternalIP')].address}")"
