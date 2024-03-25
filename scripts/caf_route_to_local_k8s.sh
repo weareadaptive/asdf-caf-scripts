@@ -46,7 +46,7 @@ else
 fi
 
 # Get the info from K8s for what we need to connect to
-declare ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE EMISSARY_NS EMISSARY_SVC DNS_DOMAIN SERVICE_CIDR
+declare ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE INGRESS_CONTROLLER_NS INGRESS_CONTROLLER_SVC DNS_DOMAIN SERVICE_CIDR
 
 ADAPTIVE_DOMAIN="${ADAPTIVE_DOMAIN:-adaptive.local}"
 DNS_DOMAIN="cluster.local"
@@ -91,10 +91,19 @@ case ${OSTYPE} in
 esac
 
 DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath="{.spec.clusterIP}")"
-EMISSARY_NS="$(kubectl get svc -l app.kubernetes.io/name=emissary-ingress -A --no-headers | grep -v admin | awk '{print $1}' || echo 'unknown')"
-EMISSARY_SVC="$(kubectl get svc -l app.kubernetes.io/name=emissary-ingress -A --no-headers | grep -v admin | awk '{print $2}' || echo 'unknown')"
 
-export ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE EMISSARY_NS EMISSARY_SVC DNS_DOMAIN SERVICE_CIDR
+if kubectl get ns nginx-ingress; then
+  label="caf/is-ingress-controller=true"
+elif kubectl get ns emissary-ingress; then
+  label="app.kubernetes.io/name=emissary-ingress"
+else
+  echo "Unable to create a route to K8s: unsupported ingress controller"
+  exit 1
+fi
+INGRESS_CONTROLLER_NS="$(kubectl get svc -l "${label}" -A --no-headers | grep -v admin | awk '{print $1}' || echo 'unknown')"
+INGRESS_CONTROLLER_SVC="$(kubectl get svc -l "${label}" -A --no-headers | grep -v admin | awk '{print $2}' || echo 'unknown')"
+
+export ADAPTIVE_DOMAIN POD_CIDR NODE_IP DNS_IP NODE_INTERFACE INGRESS_CONTROLLER_NS INGRESS_CONTROLLER_SVC DNS_DOMAIN SERVICE_CIDR
 
 echo "Using:"
 echo "DNS_DOMAIN: ${DNS_DOMAIN:? Not found}"
@@ -104,8 +113,8 @@ echo "SERVICE_CIDR: ${SERVICE_CIDR:? Not found}"
 echo "DNS_IP: ${DNS_IP:? Not found}"
 echo "NODE_IP: ${NODE_IP:? Not found}"
 echo "NODE_INTERFACE: ${NODE_INTERFACE:? Not found}"
-echo "EMMISSARY_NS: ${EMISSARY_NS:? Not found}"
-echo "EMISSARY_SVC: ${EMISSARY_SVC:? Not found}"
+echo "INGRESS_CONTROLLER_NS ${INGRESS_CONTROLLER_NS:? Not found}"
+echo "INGRESS_CONTROLLER_SVC: ${INGRESS_CONTROLLER_SVC:? Not found}"
 
 function f_cleanup_routing() {
 
@@ -165,14 +174,14 @@ OLD_COREDNS_CONFIG="$(kubectl -n kube-system get configmap coredns -o jsonpath='
 # Stanza to inject into coredns configmap
 export NEW_COREDNS_CONFIG="${ADAPTIVE_DOMAIN}:53 {
     template ANY A ${ADAPTIVE_DOMAIN} {
-        answer \"{{ .Name }} 60 IN CNAME ${EMISSARY_SVC}.${EMISSARY_NS}.svc.${DNS_DOMAIN}\"
+        answer \"{{ .Name }} 60 IN CNAME ${INGRESS_CONTROLLER_SVC}.${INGRESS_CONTROLLER_NS}.svc.${DNS_DOMAIN}\"
     }
 }
 ${OLD_COREDNS_CONFIG}
 "
 
-# Already configured coredns or non-existant emmissary?
-if kubectl -n kube-system get -o yaml configmap coredns | grep -q "${ADAPTIVE_DOMAIN}" || [[ "${EMISSARY_SVC}" == 'unknown' ]]; then
+# Already configured coredns or non-existant ingress controller?
+if kubectl -n kube-system get -o yaml configmap coredns | grep -q "${ADAPTIVE_DOMAIN}" || [[ "${INGRESS_CONTROLLER_SVC}" == 'unknown' ]]; then
   true
 else
   echo "Updating coredns for ingress records under: ${ADAPTIVE_DOMAIN}"
