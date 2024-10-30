@@ -14,7 +14,7 @@
 # Dependencies
 
 - `bash`, `curl`, `tar`: generic POSIX utilities.
-- `glab`
+- `yq`
 
 # Install
 
