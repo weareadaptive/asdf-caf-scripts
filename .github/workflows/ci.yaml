@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   create-local-k8s:
-    runs-on: caf-adaptive-npr-common-small
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
