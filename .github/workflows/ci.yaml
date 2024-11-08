@@ -19,4 +19,6 @@ jobs:
 
       - name: Test local meta charts
         run: |
-          direnv exec . which caf_create_local_k8s.sh
+          apt-get update && apt-get install asdf -y
+          asdf install
+          # direnv exec . which caf_create_local_k8s.sh
