@@ -1,0 +1,22 @@
+---
+name: Linux test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["*"]
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  create-local-k8s:
+    runs-on: caf-adaptive-npr-common-small
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test local meta charts
+        run: |
+          direnv exec . which caf_create_local_k8s.sh
