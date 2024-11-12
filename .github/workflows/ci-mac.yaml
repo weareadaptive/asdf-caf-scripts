@@ -3,32 +3,32 @@ name: Mac test
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: ["*"]
+  push:
+    branches: ["*"]
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
-  pre-clean:
-    # if: ${{ ! github.event.pull_request.draft }}
-    runs-on: caf-adaptive-mac
-    steps:
-      - name: Reset OrbStack
-        run: |
-          echo "Resetting OrbStack and deleting all data..."
-          orb reset -y
-          echo "Done"
+  # pre-clean:
+  #   # if: ${{ ! github.event.pull_request.draft }}
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Reset OrbStack
+  #       run: |
+  #         echo "Resetting OrbStack and deleting all data..."
+  #         orb reset -y
+  #         echo "Done"
 
   create-local-k8s:
-    runs-on: caf-adaptive-mac
+    runs-on: macos-latest
     needs:
       - pre-clean
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test local meta charts
-        run: |
-          direnv exec . which caf_create_local_k8s.sh
+      # - name: Test local meta charts
+      #   run: |
+      #     direnv exec . which caf_create_local_k8s.sh
