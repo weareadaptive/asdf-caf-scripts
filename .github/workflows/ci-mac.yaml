@@ -23,6 +23,8 @@ jobs:
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
           asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
+          asdf install caf-scripts 1.5.0
+          caf-scripts
 
       # - name: Test local meta charts
       #   run: |
