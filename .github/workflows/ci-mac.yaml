@@ -17,6 +17,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install asdf for macOS
+        run: |
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+          echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+          source ~/.zshrc
+
       # - name: Test local meta charts
       #   run: |
       #     direnv exec . which caf_create_local_k8s.sh
