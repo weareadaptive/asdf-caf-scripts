@@ -11,20 +11,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # pre-clean:
-  #   # if: ${{ ! github.event.pull_request.draft }}
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Reset OrbStack
-  #       run: |
-  #         echo "Resetting OrbStack and deleting all data..."
-  #         orb reset -y
-  #         echo "Done"
-
   create-local-k8s:
     runs-on: macos-latest
-    needs:
-      - pre-clean
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
