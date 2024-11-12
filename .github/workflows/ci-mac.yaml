@@ -22,6 +22,7 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
+          asdf plugin add caf-scripts git@github.com:AdaptiveConsulting/asdf-caf-scripts.git
 
       # - name: Test local meta charts
       #   run: |
