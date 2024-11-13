@@ -19,8 +19,8 @@ jobs:
 
       - name: Download and Install OrbStack via Brew
         run: |
-          brew install orbstack
-          brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
+          brew extract --version=1.5.1_16857 orbstack homebrew/cask
+          brew install orbstack@1.5.1_16857
           orbctl --help
 
       # - name: Download and Install OrbStack DMG file
