@@ -15,6 +15,7 @@ jobs:
     runs-on: macos-13
     env:
       ACTIONS_STEP_DEBUG: true
+      ACTIONS_RUNNER_DEBUG: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,6 +38,7 @@ jobs:
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
           orb status
+          echo "Starting Orbstack"
           orb start
           # caf_create_local_k8s.sh
           # caf_route_to_local_k8s.sh
