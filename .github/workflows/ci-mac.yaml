@@ -38,7 +38,7 @@ jobs:
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
           orb status
-          # caf_create_local_k8s.sh
+          caf_create_local_k8s.sh
           # caf_route_to_local_k8s.sh
 
       # - name: Test local meta charts
