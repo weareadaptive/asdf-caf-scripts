@@ -6,7 +6,7 @@ set -eo pipefail
 
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
 CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.30.0}"
-CAF_RESTART_ORBSTACK=0
+CAF_RESTART_ORBSTACK=1
 
 # check for YQ
 if yq --version > /dev/null 2>&1
