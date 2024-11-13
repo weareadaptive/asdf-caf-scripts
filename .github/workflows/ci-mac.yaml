@@ -28,6 +28,14 @@ jobs:
           which caf_create_local_k8s.sh
           which caf_route_to_local_k8s.sh
 
+      - name: Create Local K8s
+        run: |
+          ./caf_create_local_k8s.sh
+
+      - name: Route to Local K8s
+        run: |
+          ./caf_route_to_local_k8s.sh
+
       # - name: Test local meta charts
       #   run: |
       #     direnv exec . which caf_create_local_k8s.sh
