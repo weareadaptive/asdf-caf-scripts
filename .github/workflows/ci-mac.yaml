@@ -33,15 +33,7 @@ jobs:
           asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-
-      - name: Create Local K8s
-        run: |
-          asdf install
           caf_create_local_k8s.sh
-
-      - name: Route to Local K8s
-        run: |
-          asdf install
           caf_route_to_local_k8s.sh
 
       # - name: Test local meta charts
