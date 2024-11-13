@@ -28,15 +28,15 @@ jobs:
           popd
           hdiutil detach $TMPMOUNT
 
-      # - name: Install asdf for macOS
-      #   run: |
-      #     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-      #     echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-      #     source ~/.zshrc
-      #     asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
-      #     echo .tool-versions
-      #     cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-      #     caf_create_local_k8s.sh
+      - name: Install asdf for macOS
+        run: |
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+          echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+          source ~/.zshrc
+          asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
+          echo .tool-versions
+          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
+          caf_create_local_k8s.sh
 
 
       # - name: Create Local K8s
