@@ -17,16 +17,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install asdf for macOS
+      - name: Download and Install OrbStack DMG file
         run: |
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-          echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-          source ~/.zshrc
-          asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
-          brew install orbstack@1.5.1_16857
-          echo .tool-versions
-          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-          caf_create_local_k8s.sh
+          curl -L -o OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
+          hdiutil attach OrbStack.dmg
+          find /Volumes/OrbStack -name "*.app" -exec cp -R {} /Applications \;
+          hdiutil detach /Volumes/OrbStack
+
+      # - name: Install asdf for macOS
+      #   run: |
+      #     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+      #     echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
+      #     source ~/.zshrc
+      #     asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
+      #     echo .tool-versions
+      #     cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
+      #     caf_create_local_k8s.sh
 
 
       # - name: Create Local K8s
