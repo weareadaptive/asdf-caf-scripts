@@ -34,8 +34,9 @@ jobs:
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          CAF_RESTART_ORBSTACK=1 caf_create_local_k8s.sh
-          caf_route_to_local_k8s.sh
+          orb status
+          caf_create_local_k8s.sh
+          # caf_route_to_local_k8s.sh
 
       # - name: Test local meta charts
       #   run: |
