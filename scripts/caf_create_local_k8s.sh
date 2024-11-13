@@ -67,16 +67,17 @@ case ${OSTYPE} in
 
     # Configuration we need in Orbstack
     f_orbctl_update rosetta true
-    f_orbctl_update setup.use_admin true
-    f_orbctl_update k8s.enable true
+    # f_orbctl_update setup.use_admin true
+    # f_orbctl_update k8s.enable true
     # f_orbctl_update cpu "${MAX_CPU}"
     # f_orbctl_update memory_mib "${CAF_LCL_K8S_MEMORY}384"
     # f_orbctl_update network_proxy auto
-    f_orbctl_update network_bridge true
-    f_orbctl_update docker.set_context true
-    f_orbctl_update k8s.expose_services true
+    # f_orbctl_update network_bridge true
+    # f_orbctl_update docker.set_context true
+    # f_orbctl_update k8s.expose_services true
 
     if [[ "${CAF_RESTART_ORBSTACK}" == "1" ]]; then
+      echo "Restarting orbstack"
       orbctl stop
       orbctl start
       orbctl status
