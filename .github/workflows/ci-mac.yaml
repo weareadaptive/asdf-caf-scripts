@@ -36,7 +36,7 @@ jobs:
           asdf install
           orb status
           orb start
-          caf_create_local_k8s.sh
+          # caf_create_local_k8s.sh
           # caf_route_to_local_k8s.sh
 
       # - name: Test local meta charts
