@@ -24,7 +24,9 @@ jobs:
           source ~/.zshrc
           asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
           asdf install caf-scripts 1.5.0
-          caf-scripts
+          asdf list-all caf-scripts
+          which caf_create_local_k8s.sh
+          which caf_route_to_local_k8s.sh
 
       # - name: Test local meta charts
       #   run: |
