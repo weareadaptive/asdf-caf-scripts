@@ -23,18 +23,6 @@ jobs:
           brew install --cask ./orbstack.rb
           orbctl --help
 
-      # - name: Download and Install OrbStack DMG file
-      #   run: |
-      #     TMPMOUNT=$(/usr/bin/mktemp -d /tmp/orbstack.XXXX)
-      #     mkdir -p "$TMPMOUNT/downloads"
-      #     curl -Lso $TMPMOUNT/downloads/OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
-      #     hdiutil attach $TMPMOUNT/downloads/OrbStack.dmg -mountpoint $TMPMOUNT
-      #     pushd $TMPMOUNT
-      #     tar cf - "./OrbStack.app" | tar xf - -C /Applications
-      #     popd
-      #     hdiutil detach $TMPMOUNT
-      #     orb start
-
       - name: Install asdf for macOS
         run: |
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
@@ -44,12 +32,10 @@ jobs:
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
+
+      - name: Create Local K8s
+        run: |
           caf_create_local_k8s.sh
-
-
-      # - name: Create Local K8s
-      #   run: |
-      #     caf_create_local_k8s.sh
 
       # - name: Route to Local K8s
       #   run: |
