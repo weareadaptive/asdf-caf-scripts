@@ -27,6 +27,7 @@ jobs:
           tar cf - "./OrbStack.app" | tar xf - -C /Applications
           popd
           hdiutil detach $TMPMOUNT
+          orb start
 
       - name: Install asdf for macOS
         run: |
