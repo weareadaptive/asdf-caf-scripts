@@ -23,10 +23,7 @@ jobs:
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
           asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
-          asdf install caf-scripts 1.5.0
-          asdf list-all caf-scripts
-          which caf_create_local_k8s.sh
-          which caf_route_to_local_k8s.sh
+          asdf install | sed '/is already installed/d'
           caf_create_local_k8s.sh
 
       # - name: Create Local K8s
