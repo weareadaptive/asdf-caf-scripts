@@ -22,6 +22,8 @@ jobs:
           curl -L -o OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
           app_location=$(hdiutil attach OrbStack.dmg | grep "/Volumes/" | awk '{print substr($0, index($0,$3))}')
           cp -R "$app_location/OrbStack.app" /Applications
+          echo "$app_location"
+          orb start
           hdiutil detach $app_location
 
       # - name: Install asdf for macOS
