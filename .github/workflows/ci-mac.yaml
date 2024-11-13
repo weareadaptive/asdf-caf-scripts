@@ -25,8 +25,7 @@ jobs:
           asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-          asdf install | sed '/is already installed/d'
-          brew install orbstack
+          brew install orbstack@1.5.1
           caf_create_local_k8s.sh
 
       # - name: Create Local K8s
