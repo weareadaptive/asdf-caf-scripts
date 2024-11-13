@@ -17,18 +17,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download and Install OrbStack DMG file
+      - name: Download and Install OrbStack via Brew
         run: |
-          TMPMOUNT=$(/usr/bin/mktemp -d /tmp/orbstack.XXXX)
-          mkdir -p "$TMPMOUNT/downloads"
-          curl -Lso $TMPMOUNT/downloads/OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
-          hdiutil attach $TMPMOUNT/downloads/OrbStack.dmg -mountpoint $TMPMOUNT
-          pushd $TMPMOUNT
-          tar cf - "./OrbStack.app" | tar xf - -C /Applications
-          popd
-          hdiutil detach $TMPMOUNT
-          source ~/.zshrc
-          orb start
+          brew install orbstack
+          brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
+          orbctl --help
+
+      # - name: Download and Install OrbStack DMG file
+      #   run: |
+      #     TMPMOUNT=$(/usr/bin/mktemp -d /tmp/orbstack.XXXX)
+      #     mkdir -p "$TMPMOUNT/downloads"
+      #     curl -Lso $TMPMOUNT/downloads/OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
+      #     hdiutil attach $TMPMOUNT/downloads/OrbStack.dmg -mountpoint $TMPMOUNT
+      #     pushd $TMPMOUNT
+      #     tar cf - "./OrbStack.app" | tar xf - -C /Applications
+      #     popd
+      #     hdiutil detach $TMPMOUNT
+      #     orb start
 
       - name: Install asdf for macOS
         run: |
