@@ -19,12 +19,14 @@ jobs:
 
       - name: Download and Install OrbStack DMG file
         run: |
-          curl -L -o OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
-          app_location=$(hdiutil attach OrbStack.dmg | grep "/Volumes/" | awk '{print substr($0, index($0,$3))}')
-          cp -R "$app_location/OrbStack.app" /Applications
-          echo "$app_location"
-          orb start
-          hdiutil detach $app_location
+          TMPMOUNT=$(/usr/bin/mktemp -d /tmp/orbstack.XXXX)
+          mkdir -p "$TMPMOUNT/downloads"
+          curl -Lso $TMPMOUNT/downloads/OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
+          hdiutil attach $TMPMOUNT/downloads/OrbStack.dmg -mountpoint $TMPMOUNT
+          pushd $TMPMOUNT
+          tar cf - "./OrbStack.app" | tar xf - -C /Applications
+          popd
+          hdiutil detach $TMPMOUNT
 
       # - name: Install asdf for macOS
       #   run: |
