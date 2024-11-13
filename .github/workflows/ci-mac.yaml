@@ -20,8 +20,7 @@ jobs:
       - name: Download and Install OrbStack DMG file
         run: |
           curl -L -o OrbStack.dmg https://cdn-updates.orbstack.dev/amd64/OrbStack_v1.5.1_16857_amd64.dmg
-          hdiutil attach OrbStack.dmg
-          app_location=$(hdiutil attach $tmp_file | tail -n 1 | tr -s "[:blank:]" "\n")
+          app_location=$(hdiutil attach OrbStack.dmg | tail -n 1 | tr -s "[:blank:]" "\n")
           echo $app_location
           # find /Volumes/OrbStack -name "*.app" -exec cp -R {} /Applications \;
           # hdiutil detach /Volumes/OrbStack
