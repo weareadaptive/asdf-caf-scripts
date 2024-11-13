@@ -6,7 +6,7 @@ set -eo pipefail
 
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
 CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.30.0}"
-CAF_RESTART_ORBSTACK=1
+CAF_RESTART_ORBSTACK=0
 
 # check for YQ
 if yq --version > /dev/null 2>&1
@@ -69,9 +69,9 @@ case ${OSTYPE} in
     f_orbctl_update rosetta true
     f_orbctl_update setup.use_admin true
     f_orbctl_update k8s.enable true
-    f_orbctl_update cpu "${MAX_CPU}"
+    # f_orbctl_update cpu "${MAX_CPU}"
     # f_orbctl_update memory_mib "${CAF_LCL_K8S_MEMORY}384"
-    f_orbctl_update network_proxy auto
+    # f_orbctl_update network_proxy auto
     f_orbctl_update network_bridge true
     f_orbctl_update docker.set_context true
     f_orbctl_update k8s.expose_services true
