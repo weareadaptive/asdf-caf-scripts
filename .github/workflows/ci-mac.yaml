@@ -26,8 +26,16 @@ jobs:
           # ARM based runners do not support nested virtualization so we can't install OrbStack on them either.
           curl -sLo orbstack.rb https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
           brew install --cask ./orbstack.rb
-          sleep 20
-          orb status
+          echo "Waiting for docker provider to come up: $(date)"
+          date && ${TIMEOUT_CMD} 3m bash -c 'while ! docker ps >/dev/null 2>&1 ; do
+            sleep 10
+            echo "Waiting: $(date)"
+          done'
+          echo "Testing again to make sure docker came up: $(date)"
+          if ! docker ps >/dev/null 2>&1 ; then
+            echo "Docker is not running, exiting"
+            exit 1
+          fi
           orb start
 
       - name: Install asdf for macOS
