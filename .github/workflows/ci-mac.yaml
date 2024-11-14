@@ -27,6 +27,7 @@ jobs:
           curl -sLo orbstack.rb https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
           brew install --cask ./orbstack.rb
           orb start
+          sleep 20
 
       - name: Install asdf for macOS
         run: |
