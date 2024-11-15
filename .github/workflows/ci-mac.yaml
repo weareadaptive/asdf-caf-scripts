@@ -28,8 +28,7 @@ jobs:
           brew install --cask ./orbstack.rb
           if command -v orb 2>/dev/null ; then
             docker context use orbstack
-            echo "Starting orbstack" && (nohup orb start &)
-            orb start
+            echo "Starting orbstack" && orb start
 
       - name: Install asdf for macOS
         run: |
