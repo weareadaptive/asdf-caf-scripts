@@ -26,6 +26,7 @@ jobs:
           # ARM based runners do not support nested virtualization so we can't install OrbStack on them either.
           curl -sLo orbstack.rb https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
           brew install --cask ./orbstack.rb
+          sleep 100
           if command -v orb 2>/dev/null ; then
             docker context use orbstack
             echo "Starting orbstack" && orb start
