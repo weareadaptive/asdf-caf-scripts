@@ -29,6 +29,7 @@ jobs:
           if command -v orb 2>/dev/null ; then
             docker context use orbstack
             echo "Starting orbstack" && orb start
+          fi
 
       - name: Install asdf for macOS
         run: |
