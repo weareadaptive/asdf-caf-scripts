@@ -27,7 +27,10 @@ jobs:
           curl -sLo orbstack.rb https://raw.githubusercontent.com/Homebrew/homebrew-cask/65da904d37b45eb3f0644e6419ebde37ef927f20/Casks/o/orbstack.rb
           brew install --cask ./orbstack.rb
           echo "Waiting for docker provider to come up: $(date)"
-          sleep 100
+          while ! docker ps >/dev/null 2>&1 ; do
+            sleep 10
+            echo "Waiting: $(date)"
+          done
           orb start
 
       - name: Install asdf for macOS
@@ -40,7 +43,10 @@ jobs:
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
           orb status
-          sleep 100
+          while ! docker ps >/dev/null 2>&1 ; do
+            sleep 10
+            echo "Waiting: $(date)"
+          done
           caf_create_local_k8s.sh
           # caf_route_to_local_k8s.sh
 
