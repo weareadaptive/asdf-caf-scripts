@@ -34,9 +34,9 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch ${{ env.ASDF_VERSION }}
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
-          asdf plugin add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
+          # asdf plugin add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          caf_create_local_k8s.sh
-          caf_route_to_local_k8s.sh
+          ./scripts/caf_create_local_k8s.sh
+          ./scripts/caf_route_to_local_k8s.sh
