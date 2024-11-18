@@ -32,3 +32,4 @@ jobs:
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
+          caf_create_local_k8s.sh
