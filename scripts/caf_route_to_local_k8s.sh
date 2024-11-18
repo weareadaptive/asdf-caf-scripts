@@ -92,7 +92,8 @@ esac
 
 DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath="{.spec.clusterIP}")"
 
-if kubectl get ns nginx-ingress; then
+if kubectl get ns ingress-nginx; then
+# if kubectl get ns nginx-ingress; then
   label="caf/is-ingress-controller=true"
 elif kubectl get ns emissary-ingress; then
   label="app.kubernetes.io/name=emissary-ingress"
