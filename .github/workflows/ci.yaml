@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MINIKUBE_VERSION: "latest"
-      ASDF_VERSION: CAF-439-asdf-caf-scripts-tests
+      ASDF_VERSION: CAF-439-asdf-caf-script-tests
       CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git"
       CAF_LCL_K8S_MEMORY: "8" #GB
 
