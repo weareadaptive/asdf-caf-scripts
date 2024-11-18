@@ -13,23 +13,29 @@ concurrency:
 jobs:
   create-local-k8s:
     runs-on: ubuntu-latest
+    env:
+      MINIKUBE_VERSION: "latest"
+      ASDF_VERSION: "v0.14.1"
+      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git"
+      CAF_LCL_K8S_MEMORY: "8192"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Minikube
         run: |
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
           chmod +x minikube
           sudo mv minikube /usr/local/bin/
 
       - name: Test local meta charts
         run: |
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch ${{ env.ASDF_VERSION }}
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
-          asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
+          asdf plugin add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          CAF_LCL_K8S_MEMORY=8192 caf_create_local_k8s.sh
+          caf_create_local_k8s.sh
