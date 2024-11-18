@@ -106,7 +106,7 @@ case ${OSTYPE} in
         --driver="docker" \
         --memory="${CAF_LCL_K8S_MEMORY}G" \
         --cpus="max" \
-        --addons="registry,metrics-server" \
+        --addons="registry,metrics-server,ingress" \
         --embed-certs
     fi
 
