@@ -92,7 +92,7 @@ esac
 
 DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath="{.spec.clusterIP}")"
 
-kubectl get namespaces
+echo $(kubectl get namespaces)
 
 if kubectl get ns ingress-nginx; then
   label="caf/is-ingress-controller=true"
