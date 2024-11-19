@@ -16,7 +16,7 @@ jobs:
     env:
       MINIKUBE_VERSION: "latest"
       ASDF_VERSION: "v0.14.1"
-      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=main"
+      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git"
       CAF_LCL_K8S_MEMORY: "8" #GB
       ASDF_DIR: /opt/asdf
 
@@ -34,7 +34,7 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
 
-          git clone ${{ env.CAF_SCRIPTS_REPO }} /tmp/caf-scripts
+          git clone ${{ env.CAF_SCRIPTS_REPO }} --branch main /tmp/caf-scripts
           asdf plugin-add caf-scripts /tmp/caf-scripts
 
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
