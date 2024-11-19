@@ -38,9 +38,11 @@ jobs:
           asdf install && echo "ASDF INSTALL"
           echo "ASDF INSTALL DONE" 
           echo "$(asdf plugin list)"
+          caf_create_local_k8s.sh
           # ./scripts/caf_route_to_local_k8s.sh
 
       - name: Run scripts
         run: |
-          ./scripts/caf_create_local_k8s.sh
+          # ./scripts/caf_create_local_k8s.sh
+          caf_create_local_k8s.sh
 
