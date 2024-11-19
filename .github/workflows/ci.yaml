@@ -16,7 +16,7 @@ jobs:
     env:
       MINIKUBE_VERSION: "latest"
       ASDF_VERSION: "v0.14.1"
-      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=main"
+      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts?ref=main"
       CAF_LCL_K8S_MEMORY: "8" #GB
       ASDF_DIR: /opt/asdf
 
@@ -27,12 +27,12 @@ jobs:
       - name: Install Dependencies
         run: |
           # Install Minikube
-          # curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
-          # chmod +x minikube
-          # sudo mv minikube /usr/local/bin/
-          # which minikube
-          # git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
-          # . "${{ env.ASDF_DIR }}/asdf.sh"
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
+          chmod +x minikube
+          sudo mv minikube /usr/local/bin/
+          which minikube
+          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
+          . "${{ env.ASDF_DIR }}/asdf.sh"
           asdf plugin-add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install && echo "ASDF INSTALL"
