@@ -30,13 +30,14 @@ jobs:
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
           chmod +x minikube
           sudo mv minikube /usr/local/bin/
+          which minikube
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
           asdf plugin-add caf-scripts .
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install && echo "ASDF INSTALL"
           echo "ASDF INSTALL DONE" 
-          which caf_create_local_k8s.sh
+          echo "$(asdf plugin list)"
           # ./scripts/caf_route_to_local_k8s.sh
 
       - name: Run scripts
