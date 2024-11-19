@@ -32,11 +32,11 @@ jobs:
       - name: Test local meta charts
         run: |
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch ${{ env.ASDF_VERSION }}
-          echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-          source ~/.zshrc
-          asdf plugin add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
-          echo .tool-versions
-          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-          asdf install
+          echo ". ${ASDF_DIR}/asdf.sh" >> /etc/profile.d/asdf.sh && \
+          . "${ASDF_DIR}/asdf.sh" && \
+          cd /root && \
+          (cat /root/.tool-versions | cut -d' ' -f1 | grep "^[^\#]" | xargs -n1 -I{} sh -c 'echo "Adding plugin {}" && . ${ASDF_DIR}/asdf.sh && asdf plugin add {}') && \
+          . "${ASDF_DIR}/asdf.sh" && \
+          asdf install && \
           ./scripts/caf_create_local_k8s.sh
-          ./scripts/caf_route_to_local_k8s.sh
+          # ./scripts/caf_route_to_local_k8s.sh
