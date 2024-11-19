@@ -16,7 +16,7 @@ jobs:
     env:
       MINIKUBE_VERSION: "latest"
       ASDF_VERSION: "v0.14.1"
-      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts?ref=main"
+      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=main"
       CAF_LCL_K8S_MEMORY: "8" #GB
       ASDF_DIR: /opt/asdf
 
@@ -33,13 +33,16 @@ jobs:
           which minikube
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
-          asdf plugin-add caf-scripts ${{ env.CAF_SCRIPTS_REPO }} --ref ${{ github.sha }}
+
+          git clone ${{ env.CAF_SCRIPTS_REPO }} /tmp/caf-scripts
+          asdf plugin-add caf-scripts /tmp/caf-scripts
+
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install && echo "ASDF INSTALL"
           echo "ASDF INSTALL DONE" 
           echo "$(asdf plugin list)"
           echo "$(ls -larth)"
-          # caf_create_local_k8s.sh
+          caf_create_local_k8s.sh
           # ./scripts/caf_route_to_local_k8s.sh
 
       # - name: Run scripts
