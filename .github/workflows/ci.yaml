@@ -31,7 +31,7 @@ jobs:
           sudo mv minikube /usr/local/bin/
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR}} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
-          asdf plugin add .
+          asdf plugin add caf-scripts
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
