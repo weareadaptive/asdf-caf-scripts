@@ -16,7 +16,7 @@ jobs:
     env:
       MINIKUBE_VERSION: "latest"
       ASDF_VERSION: "v0.14.1"
-      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git"
+      CAF_SCRIPTS_REPO: "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=main"
       CAF_LCL_K8S_MEMORY: "8" #GB
       ASDF_DIR: /opt/asdf
 
@@ -26,21 +26,20 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          # Install Minikube
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
           chmod +x minikube
           sudo mv minikube /usr/local/bin/
-          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR}} --branch ${{ env.ASDF_VERSION }}
+          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
-          asdf plugin add caf-scripts
+          asdf plugin add {localdir}
+          asdf plugin add ${{ env.CAF_SCRIPTS_REPO }}
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
           which caf_create_local_k8s.sh
           # ./scripts/caf_route_to_local_k8s.sh
 
-      - name: Test local meta charts
-        run: |
-      
       - name: Run scripts
         run: |
           ./scripts/caf_create_local_k8s.sh
