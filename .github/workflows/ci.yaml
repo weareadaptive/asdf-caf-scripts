@@ -33,7 +33,7 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }}
           . "${{ env.ASDF_DIR }}/asdf.sh"
 
-          asdf plugin test caf-scripts ${{ env.CAF_SCRIPTS_REPO }} --asdf-plugin-gitref CAF-439-asdf-caf-scripts-tests
+          asdf plugin test caf-scripts ${{ env.CAF_SCRIPTS_REPO }} --asdf-plugin-gitref CAF-439-asdf-caf-script-tests
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
 
