@@ -36,7 +36,7 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
           echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
           source ~/.zshrc
-          asdf plugin add caf-scripts https://github.com/AdaptiveConsulting/asdf-caf-scripts.git
+          asdf plugin add caf-scripts "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=CAF-439-asdf-caf-script-tests"
           echo .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
