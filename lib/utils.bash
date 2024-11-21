@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-GITHUB_REPO="https://github.com/AdaptiveConsulting/asdf-caf-scripts"
+GITHUB_REPO="https://github.com/weareadaptive/asdf-caf-scripts"
 TOOL_NAME="caf-scripts"
 RELEASE_NAME="asdf-caf-scripts"
 
