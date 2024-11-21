@@ -40,7 +40,7 @@ jobs:
       - name: Run scripts
         run: |
           ./scripts/caf_create_local_k8s.sh
-
+          sleep 30
           curl kube-dns.kube-system.svc.cluster.local:9153/metrics
           # caf_create_local_k8s.sh
 
