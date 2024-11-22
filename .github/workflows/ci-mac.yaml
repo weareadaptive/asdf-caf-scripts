@@ -25,7 +25,7 @@ jobs:
             exit 1
           fi
 
-  create-local-k8s:
+  test-asdf-caf-scripts-mac:
     runs-on: caf-adaptive-mac
     steps:
       - name: Checkout repository
@@ -33,16 +33,14 @@ jobs:
 
       - name: Install asdf for macOS
         run: |
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
-          echo '. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-          source ~/.zshrc
-          asdf plugin add caf-scripts "https://github.com/AdaptiveConsulting/asdf-caf-scripts.git?ref=CAF-439-asdf-caf-script-tests"
-          echo .tool-versions
+          # Install ASDF and plugins
+          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
+          asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          caf_create_local_k8s.sh
-          # caf_route_to_local_k8s.sh
 
-      # - name: Test local meta charts
-      #   run: |
-      #     direnv exec . which caf_create_local_k8s.sh
+      - name: Test scripts
+        run: |
+          ./scripts/caf_create_local_k8s.sh
+          ./scripts/caf_route_to_local_k8s.sh &
+          curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
