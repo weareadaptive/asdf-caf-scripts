@@ -31,7 +31,7 @@ jobs:
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
 
           asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
-          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
+          # cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
 
       - name: Run scripts
