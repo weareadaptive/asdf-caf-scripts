@@ -23,6 +23,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check ASDF plugin
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          plugin: caf-scripts
+          giturl: "https://github.com/wearadaptive/asdf-caf-scripts"
+          gitref: CAF-439-asdf-caf-script-tests
+          command: caf_create-local-k8s.sh
+
       - name: Install Dependencies
         run: |
           # Install Minikube

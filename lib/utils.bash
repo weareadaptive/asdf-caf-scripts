@@ -42,7 +42,6 @@ download_release() {
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
 	url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
-	url="GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
