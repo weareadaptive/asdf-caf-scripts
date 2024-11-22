@@ -2,4 +2,4 @@ shfmt 3.10.0
 shellcheck 0.10.0
 yq 4.44.3
 kubectl 1.29.9
-caf-scripts ref:CAF-439-asdf-caf-script-tests
+caf-scripts path:/tmp/repo.tar.gz
