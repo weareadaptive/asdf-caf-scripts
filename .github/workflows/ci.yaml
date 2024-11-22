@@ -31,7 +31,7 @@ jobs:
           chmod +x minikube && mv minikube /usr/local/bin/
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
 
-          git clone ${{ env.CAF_SCRIPTS_REPO }} --single-branch CAF-439-asdf-caf-script-tests /tmp/repo
+          git clone ${{ env.CAF_SCRIPTS_REPO }} --branch CAF-439-asdf-caf-script-tests /tmp/repo
           asdf plugin add caf-scripts /tmp/repo
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
