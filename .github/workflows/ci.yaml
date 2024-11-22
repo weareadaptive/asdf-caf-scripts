@@ -31,14 +31,14 @@ jobs:
           chmod +x minikube && mv minikube /usr/local/bin/
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
 
-          asdf plugin add caf-scripts ${{ env.CAF_SCRIPTS_REPO }}
+          git clone ${{ env.CAF_SCRIPTS_REPO }} --branch CAF-439-asdf-caf-script-tests /tmp/repo
+          asdf plugin add caf-scripts /tmp/repo
           git archive --format=tar.gz --remote=${{ env.CAF_SCRIPTS_REPO }} CAF-439-asdf-caf-script-tests -o /tmp/repo.tar.gz
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
           asdf list
           caf_create_local_k8s.sh
           caf_route_to_local_k8s.sh &
-          sleep 10
           curl kube-dns.kube-system.svc.cluster.local:9153/metrics
 
       # - name: Run scripts
