@@ -41,10 +41,15 @@ download_release() {
 	filename="$2"
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
-	url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
+	# url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
+	curl -L \      
+	-H "Accept: application/vnd.github+json" \
+	-H "Authorization: Bearer ${GITHUB_TOKEN}" \
+	-H "X-GitHub-Api-Version: 2022-11-28" \
+	https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/CAF-439-asdf-caf-script-tests --output $filename
 
-	echo "* Downloading $TOOL_NAME release $version..."
-	curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
+	# echo "* Downloading $TOOL_NAME release $version..."
+	# curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
 install_version() {
