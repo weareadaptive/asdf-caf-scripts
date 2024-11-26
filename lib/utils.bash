@@ -42,7 +42,7 @@ download_release() {
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
 	# url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
-	curl -L "https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/CAF-439-asdf-caf-script-tests" --output $release_file
+	curl -L "https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/CAF-439-asdf-caf-script-tests" --output $filename
 
 	# echo "* Downloading $TOOL_NAME release $version..."
 	# curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
