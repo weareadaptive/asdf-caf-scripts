@@ -3,8 +3,8 @@ name: Mac test
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: ["*"]
+  push:
+    branches: ["*"]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -12,7 +12,6 @@ concurrency:
 
 jobs:
   pre-clean:
-    # if: ${{ ! github.event.pull_request.draft }}
     runs-on: caf-adaptive-mac
     steps:
       - name: Reset OrbStack
