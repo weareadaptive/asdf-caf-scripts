@@ -23,23 +23,39 @@ jobs:
             echo "Failed to reset OrbStack."
             exit 1
           fi
+      - name: Start OrbStack
+        run: |
+          success=false
+          echo "Starting OrbStack..."
+          for i in {1..5}; do
+            if orb start; then
+              echo "OrbStack successfully started."
+              success=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$success" = false ]; then
+            echo "Failed to start OrbStack after 5 attempts."
+            exit 1
+          fi
 
-  # test-asdf-caf-scripts-mac:
-  #   runs-on: caf-adaptive-mac
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  test-asdf-caf-scripts-mac:
+    runs-on: caf-adaptive-mac
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Install asdf for macOS
-  #       run: |
-  #         # Install ASDF and plugins
-  #         git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
-  #         asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
-  #         cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-  #         asdf install
+      - name: Install asdf for macOS
+        run: |
+          # Install ASDF and plugins
+          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
+          asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
+          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
+          asdf install
 
-  #     - name: Test scripts
-  #       run: |
-  #         ./scripts/caf_create_local_k8s.sh
-  #         ./scripts/caf_route_to_local_k8s.sh &
-  #         curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
+      - name: Test scripts
+        run: |
+          ./scripts/caf_create_local_k8s.sh
+          ./scripts/caf_route_to_local_k8s.sh &
+          curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
