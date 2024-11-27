@@ -40,9 +40,17 @@ download_release() {
 	version="$1"
 	filename="$2"
 
+	IFS=':' read -r -a version_info <<<"$version"
+	if [ "${version_info[0]}" = "ref" ]; then
+		version="${version_info[1]}"
+	else
+		version="v$version"
+	fi
+
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
 	# url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
-	curl -L "https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/CAF-439-asdf-caf-script-tests" --output $filename
+	url="https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/${version}"
+	curl -L "$url" --output $filename || fail "Could not download $url"
 
 	# echo "* Downloading $TOOL_NAME release $version..."
 	# curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
