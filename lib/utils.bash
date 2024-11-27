@@ -44,7 +44,7 @@ download_release() {
 	if [ "${version_info[0]}" = "ref" ]; then
 		version="${version_info[1]}"
 	else
-		version="$version"
+		version="v$version"
 	fi
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
