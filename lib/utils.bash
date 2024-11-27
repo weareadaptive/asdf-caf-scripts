@@ -51,7 +51,7 @@ download_release() {
 	# url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
 	url="https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/${version}"
 	# curl -L "https://api.github.com/repos/weareadaptive/asdf-caf-scripts/tarball/CAF-439-asdf-caf-script-tests" -C - --output $filename
-	curl -L -C - "$url" -o $filename || fail "Could not download $url"
+	curl -L "$url" -C - -o $filename || fail "Could not download $url"
 
 	# echo "* Downloading $TOOL_NAME release $version..."
 	# curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
