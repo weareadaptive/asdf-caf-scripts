@@ -2,7 +2,9 @@
 
 set -euo pipefail
 
-GITHUB_REPO="https://github.com/weareadaptive/asdf-caf-scripts"
+OWNER="weareadaptive"
+REPO="asdf-caf-scripts"
+GITHUB_REPO="https://github.com/${OWNER}/${REPO}"
 TOOL_NAME="caf-scripts"
 RELEASE_NAME="asdf-caf-scripts"
 
@@ -36,25 +38,26 @@ list_all_versions() {
 }
 
 download_release() {
-	local version filename url
-	version="$1"
-	filename="$2"
+	local install_type="$1"
+	local version="$2"
+	local filename="$3"
+	local url
+
+	if [ "$install_type" == "version" ]; then
+		url="${GITHUB_REPO}/archive/refs/tags/v${version}.tar.gz"
+	else
+		url="https://api.github.com/repos/${OWNER}/${REPO}/tarball/${version}"
+	fi
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
-	url="$GITHUB_REPO/archive/refs/tags/v${version}.tar.gz"
-
 	echo "* Downloading $TOOL_NAME release $version..."
-	curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
+	curl -L "$url" -C - -o $filename || fail "Could not download $url"
 }
 
 install_version() {
 	local install_type="$1"
 	local version="$2"
 	local install_path="${3%/bin}/bin"
-
-	if [ "$install_type" != "version" ]; then
-		fail "asdf-$TOOL_NAME supports release installs only"
-	fi
 
 	(
 		mkdir -p "$install_path"
