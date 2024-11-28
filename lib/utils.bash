@@ -51,7 +51,7 @@ download_release() {
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
 	echo "* Downloading $TOOL_NAME release $version..."
-	curl -L "$url" -C - -o $filename || fail "Could not download $url"
+	curl -fsSL "$url" -C - -o $filename || fail "Could not download $url"
 }
 
 install_version() {
