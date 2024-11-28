@@ -4,7 +4,8 @@ set -euo pipefail
 
 OWNER="weareadaptive"
 REPO="asdf-caf-scripts"
-GITHUB_REPO="https://github.com/${OWNER}/${REPO}"
+GITHUB_REPO_URL="https://github.com/${OWNER}/${REPO}"
+GITHUB_API_URL="https://api.github.com"
 TOOL_NAME="caf-scripts"
 RELEASE_NAME="asdf-caf-scripts"
 
@@ -44,9 +45,9 @@ download_release() {
 	local url
 
 	if [ "$install_type" == "version" ]; then
-		url="${GITHUB_REPO}/archive/refs/tags/v${version}.tar.gz"
+		url="${GITHUB_REPO_URL}/archive/refs/tags/v${version}.tar.gz"
 	else
-		url="https://api.github.com/repos/${OWNER}/${REPO}/tarball/${version}"
+		url="${GITHUB_API_URL}/repos/${OWNER}/${REPO}/tarball/${version}"
 	fi
 
 	# TODO: Adapt the release URL convention for <YOUR TOOL>
