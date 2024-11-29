@@ -45,7 +45,7 @@ download_release() {
 	local url
 
 	if [ "$install_type" == "version" ]; then
-		url="${GITHUB_REPO_URL}/archive/refs/tags/v${version}.tar.gz"
+		url="${GITHUB_REPO_URL}/archive/refs/tags/v${version#v}.tar.gz"
 	else
 		url="${GITHUB_API_URL}/repos/${OWNER}/${REPO}/tarball/${version}"
 	fi
