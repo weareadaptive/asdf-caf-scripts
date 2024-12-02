@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        uses: ./github/actions/install-dependencies
+        uses: ./.github/actions/install-dependencies
         with:
           asdf_version: ${{ env.ASDF_VERSION }}
           asdf_dir: ${{ env.ASDF_DIR }}
