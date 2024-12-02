@@ -3,6 +3,7 @@
 # This script connects your local machine to local K8s routing and DNS
 
 set -eo pipefail
+echo "CODE CHANGE"
 
 function f_check_kube_context {
 
