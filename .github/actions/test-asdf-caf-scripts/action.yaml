@@ -1,5 +1,5 @@
-name: 'Install Dependencies'
-description: 'Install ASDF and required plugins'
+name: 'Test ASDF CAF Scripts'
+description: 'Install ASDF and required plugins and test functionality of CAF scripts'
 
 runs:
   using: 'composite'
