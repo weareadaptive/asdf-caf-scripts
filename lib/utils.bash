@@ -44,17 +44,14 @@ download_release() {
 	local filename="$3"
 	local url
 
-	formatted_version=$(printf "$version" | jq -sRr @uri)
-
 	if [ "$install_type" == "version" ]; then
 		url="${GITHUB_REPO_URL}/archive/refs/tags/v${version#v}.tar.gz"
 	else
-		url="${GITHUB_API_URL}/repos/${OWNER}/${REPO}/tarball/${formatted_version}"
+		url="${GITHUB_API_URL}/repos/${OWNER}/${REPO}/tarball/${version}"
 	fi
 
-	# TODO: Adapt the release URL convention for <YOUR TOOL>
 	echo "* Downloading $TOOL_NAME release $version..."
-	curl -fsSL "$url" -C - -o $filename || fail "Could not download $url"
+	curl -fsSL -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
 install_version() {
@@ -74,10 +71,11 @@ install_version() {
 }
 
 check_version() {
-	local version="$1"
-	local allowed_pattern='^[a-zA-Z0-9_-]+$'
+	local install_type="$1"
+	local version="$2"
+	local allowed_pattern='^[a-zA-Z0-9._-]+$'
 
-    if [[ ! "$version" =~ $allowed_pattern ]]; then
+    if [ "$install_type" == "ref"] && [[ ! "$version" =~ $allowed_pattern ]]; then
         echo "Error: Version '$version' contains special characters which is not supported"
         exit 1
     fi
