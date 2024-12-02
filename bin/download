@@ -9,7 +9,7 @@ plugin_dir=$(dirname "$(dirname "$current_script_path")")
 source "${plugin_dir}/lib/utils.bash"
 
 # Check version for special characters
-check_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION"
+check_version "$ASDF_INSTALL_VERSION"
 
 mkdir -p "$ASDF_DOWNLOAD_PATH"
 
