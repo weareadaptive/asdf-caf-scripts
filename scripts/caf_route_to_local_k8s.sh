@@ -92,15 +92,6 @@ esac
 
 DNS_IP="$(kubectl -n kube-system get svc kube-dns -o jsonpath="{.spec.clusterIP}")"
 
-echo $(kubectl get namespaces)
-
-if kubectl get ns ingress-nginx; then
-  label="caf/is-ingress-controller=true"
-else
-  echo "Unable to create a route to K8s: unsupported ingress controller"
-  exit 1
-fi
-
 if kubectl get ns nginx-ingress; then
   label="caf/is-ingress-controller=true"
 elif kubectl get ns emissary-ingress; then
