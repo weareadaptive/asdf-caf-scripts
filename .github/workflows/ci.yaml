@@ -36,9 +36,6 @@ jobs:
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
 
-          # Install ingress-nginx
-          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
-
       - name: Test caf_create_local_k8s
         run: |
           . "${{ env.ASDF_DIR }}/asdf.sh"
@@ -46,6 +43,9 @@ jobs:
 
       - name: Test caf_route_to_local_k8s
         run: |
+          # Install ingress-nginx
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
+
           . "${{ env.ASDF_DIR }}/asdf.sh"
           caf_route_to_local_k8s.sh &
           curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
