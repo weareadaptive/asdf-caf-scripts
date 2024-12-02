@@ -14,6 +14,9 @@ jobs:
   pre-clean:
     runs-on: caf-adaptive-mac
     steps:
+      - name: ASDF Cleanup
+        run: |
+          asdf plugin remove caf-scripts || true
       - name: Reset OrbStack
         run: |
           echo "Resetting OrbStack and deleting all data..."
