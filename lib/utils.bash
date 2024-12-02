@@ -73,54 +73,12 @@ install_version() {
 	)
 }
 
-asdf_data_dir() {
-  local data_dir
+check_version() {
+	local version="$1"
+	local allowed_pattern='^[a-zA-Z0-9_-]+$'
 
-  if [ -n "${ASDF_DATA_DIR}" ]; then
-    data_dir="${ASDF_DATA_DIR}"
-  elif [ -n "$HOME" ]; then
-    data_dir="$HOME/.asdf"
-  else
-    data_dir=$(asdf_dir)
-  fi
-
-  printf "%s\n" "$data_dir"
-}
-
-get_download_path() {
-  local plugin=$1
-  local install_type=$2
-  local version=${3//\//-}
-
-  local download_dir
-  download_dir="$(asdf_data_dir)/downloads"
-
-  [ -d "${download_dir}/${plugin}" ] || mkdir -p "${download_dir}/${plugin}"
-
-  if [ "$install_type" = "version" ]; then
-    printf "%s/%s/%s\n" "$download_dir" "$plugin" "$version"
-  elif [ "$install_type" = "path" ]; then
-    return
-  else
-    printf "%s/%s/%s-%s\n" "$download_dir" "$plugin" "$install_type" "$version"
-  fi
-}
-
-get_install_path() {
-  local plugin=$1
-  local install_type=$2
-  local version=${3//\//-}
-
-  local install_dir
-  install_dir="$(asdf_data_dir)/installs"
-
-  [ -d "${install_dir}/${plugin}" ] || mkdir -p "${install_dir}/${plugin}"
-
-  if [ "$install_type" = "version" ]; then
-    printf "%s/%s/%s\n" "$install_dir" "$plugin" "$version"
-  elif [ "$install_type" = "path" ]; then
-    printf "%s\n" "$version"
-  else
-    printf "%s/%s/%s-%s\n" "$install_dir" "$plugin" "$install_type" "$version"
-  fi
+    if [[ ! "$version" =~ $allowed_pattern ]]; then
+        echo "Error: Version '$version' contains special characters which is not supported"
+        exit 1
+    fi
 }
