@@ -1,0 +1,60 @@
+---
+name: Mac test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["*"]
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  pre-clean:
+    runs-on: caf-adaptive-mac
+    steps:
+      - name: ASDF Cleanup
+        run: |
+          asdf plugin remove caf-scripts || true
+      - name: Reset OrbStack
+        run: |
+          echo "Resetting OrbStack and deleting all data..."
+          if orb reset -y; then
+            echo "Done"
+          else
+            echo "Failed to reset OrbStack."
+            exit 1
+          fi
+      - name: Start OrbStack
+        run: |
+          success=false
+          echo "Starting OrbStack..."
+          for i in {1..5}; do
+            if orb start; then
+              echo "OrbStack successfully started."
+              success=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$success" = false ]; then
+            echo "Failed to start OrbStack after 5 attempts."
+            exit 1
+          fi
+
+  test-asdf-caf-scripts-mac:
+    runs-on: caf-adaptive-mac
+    env:
+      ASDF_VERSION: "v0.14.1"
+      CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
+      ASDF_DIR: ./opt/asdf
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test ASDF CAF Scripts
+        uses: ./.github/actions/test-asdf-caf-scripts
+        with:
+          asdf_version: ${{ env.ASDF_VERSION }}
+          asdf_dir: ${{ env.ASDF_DIR }}
