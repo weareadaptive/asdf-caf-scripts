@@ -35,7 +35,9 @@ jobs:
           echo -e "\ncaf-scripts ref:${{ github.sha }}" >> .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          which helm
+
+          # Install ingress-nginx
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
 
       - name: Test caf_create_local_k8s
         run: |
