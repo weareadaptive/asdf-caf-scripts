@@ -71,7 +71,7 @@ install_version() {
 }
 
 check_version() {
-	local version="$2"
+	local version="$1"
 	local allowed_pattern='^[a-zA-Z0-9._-]+$'
 
     if [[ ! "$version" =~ $allowed_pattern ]]; then
