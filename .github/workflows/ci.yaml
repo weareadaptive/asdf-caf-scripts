@@ -32,9 +32,9 @@ jobs:
           # Install ASDF and plugins
           git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
           asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
+          echo "caf-scripts ref:${{ github.sha }}" >> .tool-versions
           cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
           asdf install
-          asdf install caf-scripts ref:${{ github.sha }}
 
       - name: Test caf_create_local_k8s
         run: |
