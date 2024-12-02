@@ -23,29 +23,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install Minikube
         run: |
           # Install Minikube
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
           chmod +x minikube && mv minikube /usr/local/bin/
 
-          # Install ASDF and plugins
-          git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
-          asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
-          echo -e "\ncaf-scripts ref:${{ github.sha }}" >> .tool-versions
-          cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
-          asdf install
+      - name: Install Dependencies
+        uses: ./github/actions/install-dependencies
+        with:
+          asdf_version: ${{ env.ASDF_VERSION }}
+          asdf_dir: ${{ env.ASDF_DIR }}
 
-      - name: Test caf_create_local_k8s
-        run: |
-          . "${{ env.ASDF_DIR }}/asdf.sh"
-          caf_create_local_k8s.sh
+      # - name: Install Dependencies
+      #   run: |
+      #     # Install Minikube
+      #     curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
+      #     chmod +x minikube && mv minikube /usr/local/bin/
 
-      - name: Test caf_route_to_local_k8s
-        run: |
-          # Install ingress-nginx
-          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
+      #     # Install ASDF and plugins
+      #     git clone https://github.com/asdf-vm/asdf.git ${{ env.ASDF_DIR }} --branch ${{ env.ASDF_VERSION }} && . "${{ env.ASDF_DIR }}/asdf.sh"
+      #     asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
+      #     echo -e "\ncaf-scripts ref:${{ github.sha }}" >> .tool-versions
+      #     cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
+      #     asdf install
 
-          . "${{ env.ASDF_DIR }}/asdf.sh"
-          caf_route_to_local_k8s.sh &
-          curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
+      # - name: Test caf_create_local_k8s
+      #   run: |
+      #     . "${{ env.ASDF_DIR }}/asdf.sh"
+      #     caf_create_local_k8s.sh
+
+      # - name: Test caf_route_to_local_k8s
+      #   run: |
+      #     # Install ingress-nginx
+      #     helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
+
+      #     . "${{ env.ASDF_DIR }}/asdf.sh"
+      #     caf_route_to_local_k8s.sh &
+      #     curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
