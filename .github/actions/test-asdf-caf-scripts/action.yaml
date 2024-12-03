@@ -5,7 +5,7 @@ runs:
   using: 'composite'
   steps:
     - name: Install ASDF
-      if: {{ $inputs.install_asdf == 'true' }}
+      if: {{ inputs.install_asdf == 'true' }}
       shell: bash
       run: |
         git clone https://github.com/asdf-vm/asdf.git ${{ inputs.asdf_dir }} --branch ${{ inputs.asdf_version }} && . "${{ inputs.asdf_dir }}/asdf.sh"
