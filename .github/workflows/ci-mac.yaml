@@ -4,6 +4,8 @@ name: ASDF CAF Scripts tests - MacOS
 on:
   workflow_dispatch:
   push:
+    branches: [main]
+  pull_request:
     branches: ["*"]
 
 concurrency:
