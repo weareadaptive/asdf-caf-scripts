@@ -7,7 +7,7 @@ on:
     branches: ["*"]
 
 concurrency:
-  group: caf-adaptive-mac
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
