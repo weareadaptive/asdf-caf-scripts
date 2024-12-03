@@ -4,13 +4,17 @@ description: 'Install ASDF and required plugins and test functionality of CAF sc
 runs:
   using: 'composite'
   steps:
-    - name: Install ASDF and plugins
+    - name: Install ASDF
+      if: {{ $inputs.install_asdf == 'true' }}
       shell: bash
       run: |
         git clone https://github.com/asdf-vm/asdf.git ${{ inputs.asdf_dir }} --branch ${{ inputs.asdf_version }} && . "${{ inputs.asdf_dir }}/asdf.sh"
+
+    - name: Install Plugins
+      shell: bash
+      run: |
         asdf plugin add caf-scripts "https://github.com/weareadaptive/asdf-caf-scripts"
-        echo "" | tee -a .tool-versions > /dev/null
-        echo "caf-scripts ref:${{ github.sha }}" >> .tool-versions
+        echo -e "\ncaf-scripts ref:${{ github.sha }}" >> .tool-versions
         cut -d' ' -f1 .tool-versions | xargs -I{} asdf plugin-add {} || true
         asdf install
 
@@ -31,6 +35,10 @@ runs:
         curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
 
 inputs:
+  install_asdf:
+    description: 'Install ASDF'
+    required: true
+    default: 'true'
   asdf_version:
     description: 'ASDF version'
     required: true

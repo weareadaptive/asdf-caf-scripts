@@ -58,3 +58,4 @@ jobs:
         with:
           asdf_version: ${{ env.ASDF_VERSION }}
           asdf_dir: ${{ env.ASDF_DIR }}
+          install_asdf: 'false'
