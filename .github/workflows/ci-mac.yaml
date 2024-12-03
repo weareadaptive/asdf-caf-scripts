@@ -48,7 +48,7 @@ jobs:
     env:
       ASDF_VERSION: "v0.14.1"
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
-      ASDF_DIR: ./opt/asdf
+      ASDF_DIR: $HOME/.asdf
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
