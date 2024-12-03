@@ -1,5 +1,5 @@
 ---
-name: Mac test
+name: ASDF CAF Scripts tests - MacOS
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
     branches: ["*"]
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: caf-adaptive-mac
   cancel-in-progress: false
 
 jobs:
@@ -54,6 +54,5 @@ jobs:
       - name: Test ASDF CAF Scripts
         uses: ./.github/actions/test-asdf-caf-scripts
         with:
-          asdf_version: "v.0.14.1"
           asdf_dir: "$HOME/.asdf"
           install_asdf: 'false'

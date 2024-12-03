@@ -43,6 +43,8 @@ inputs:
   asdf_version:
     description: 'ASDF version'
     required: true
+    default: "v0.14.1"
   asdf_dir:
     description: 'ASDF directory'
     required: true
+    default: "/opt/asdf"
