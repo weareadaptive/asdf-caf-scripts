@@ -3,10 +3,10 @@ name: ASDF CAF Scripts tests - Linux
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: ["*"]
-  # pull_request:
-  #   branches: ["*"]
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["*"]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -29,5 +29,12 @@ jobs:
           curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
           chmod +x minikube && mv minikube /usr/local/bin/
 
+      # - name: Test ASDF CAF Scripts
+        # uses: ./.github/actions/test-asdf-caf-scripts
+
       - name: Test ASDF CAF Scripts
-        uses: ./.github/actions/test-asdf-caf-scripts
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: caf_create_local_k8s.sh & echo "Working"
+          gitref: ${{ github.sha }}
+

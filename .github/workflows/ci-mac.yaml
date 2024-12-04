@@ -57,6 +57,7 @@ jobs:
         uses: asdf-vm/actions/plugin-test@v3
         with:
           command: caf_create_local_k8s.sh & echo "Working"
+          gitref: ${{ github.sha }}
 
   # test-asdf-caf-scripts-mac:
   #   runs-on: caf-adaptive-mac
