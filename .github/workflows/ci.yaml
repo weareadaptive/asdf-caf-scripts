@@ -33,7 +33,7 @@ jobs:
       - name: Test ASDF CAF Scripts
         uses: asdf-vm/actions/plugin-test@v3
         with:
-          command: caf_create_local_k8s.sh
+          command: yq && caf_create_local_k8s.sh
           version: ref:${{ github.sha }}
 
       - name: Install Ingress NGINX
