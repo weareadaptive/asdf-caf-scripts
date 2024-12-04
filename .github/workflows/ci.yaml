@@ -38,3 +38,8 @@ jobs:
           command: caf_create_local_k8s.sh
           gitref: ${{ github.sha }}
 
+      - name: Test ASDF CAF Scripts 2
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: caf_route_to_local_k8s.sh & curl -s --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
+          gitref: ${{ github.sha }}
