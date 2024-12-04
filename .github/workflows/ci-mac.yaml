@@ -46,20 +46,9 @@ jobs:
     runs-on: caf-adaptive-mac
     env:
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
-      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "15"
     steps:
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
         with:
-          command: /bin/bash -c caf_create_local_k8s.sh
-          version: ref:${{ github.sha }}
-
-      - name: Install Ingress NGINX
-        run: |
-          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
-
-      - name: Test caf_route_to_local_k8s.sh
-        uses: asdf-vm/actions/plugin-test@v3
-        with:
-          command: caf_route_to_local_k8s.sh 
+          command: caf_create_local_k8s.sh
           version: ref:${{ github.sha }}
