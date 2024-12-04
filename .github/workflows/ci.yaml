@@ -38,6 +38,10 @@ jobs:
           command: caf_create_local_k8s.sh
           gitref: ${{ github.sha }}
 
+      - name: Install Ingress NGINX
+        run: |
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
+
       - name: Test ASDF CAF Scripts 2
         uses: asdf-vm/actions/plugin-test@v3
         with:
