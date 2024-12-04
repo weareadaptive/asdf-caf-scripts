@@ -53,7 +53,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Test ASDF CAF Scripts
-        uses: ./.github/actions/test-asdf-caf-scripts
+      - name: Test caf_create_local_k8s.sh
+        uses: asdf-vm/actions/plugin-test@v3
         with:
+          command: caf_create_local_k8s.sh
+          version: ref:${{ github.sha }}
+          skip_install: true
+
+      - name: Install Ingress NGINX
+        run: |
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace nginx-ingress --create-namespace
+
+      - name: Test caf_route_to_local_k8s.sh
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: |
+            caf_route_to_local_k8s.sh &
+            echo "Attempting to curl kube-dns metrics endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics && echo "kube-dns metrics endpoint is reachable."
+          version: ref:${{ github.sha }}
           skip_install: true
