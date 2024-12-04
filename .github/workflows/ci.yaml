@@ -3,10 +3,10 @@ name: ASDF CAF Scripts tests - Linux
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["*"]
-  pull_request:
-    branches: ["*"]
+  # push:
+  #   branches: ["*"]
+  # pull_request:
+  #   branches: ["*"]
 
 concurrency:
   group: ${{ github.workflow }}
