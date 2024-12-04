@@ -46,6 +46,9 @@ jobs:
     runs-on: caf-adaptive-mac
     env:
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
