@@ -46,5 +46,5 @@ jobs:
       - name: Test ASDF CAF Scripts 2
         uses: asdf-vm/actions/plugin-test@v3
         with:
-          command: caf_route_to_local_k8s.sh # & curl -s -o /dev/null --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
+          command: caf_route_to_local_k8s.sh & curl -s -o /dev/null --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics
           version: ref:${{ github.sha }}
