@@ -9,6 +9,8 @@ CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.30.0}"
 CAF_RESTART_ORBSTACK=0
 
 # check for YQ
+echo "CHECK FOR YQ"
+echo $(yq --version)
 if yq --version > /dev/null 2>&1
 then true
 else
