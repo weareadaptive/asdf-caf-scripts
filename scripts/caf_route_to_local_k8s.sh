@@ -17,6 +17,7 @@ function f_check_kube_context {
 }
 
 # check for YQ
+echo $(yq --version)
 if yq --version > /dev/null 2>&1
 then true
 else
