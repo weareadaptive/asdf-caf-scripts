@@ -47,6 +47,11 @@ jobs:
     env:
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
     steps:
+      - name: Activate DIRENV
+        run: |
+          echo $(pwd)
+          direnv allow
+
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
         with:
