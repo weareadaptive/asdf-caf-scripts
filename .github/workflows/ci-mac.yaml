@@ -50,6 +50,7 @@ jobs:
     steps:
       - name: Activate DIRENV
         run: |
+          cd /Users/operate
           asdf direnv local
           echo $PATH
 
