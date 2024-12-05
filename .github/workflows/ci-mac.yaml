@@ -51,9 +51,10 @@ jobs:
       - name: Activate DIRENV
         run: |
           echo "use asdf" > .envrc
+          cat .tool-versions
           direnv allow
           echo $PATH
-          echo "/Users/operate/.asdf/installs/yq/4.44.3/bin" >> "$GITHUB_PATH"
+          # echo "/Users/operate/.asdf/installs/yq/4.44.3/bin" >> "$GITHUB_PATH"
 
 
       - name: Test caf_create_local_k8s.sh
