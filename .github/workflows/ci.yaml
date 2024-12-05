@@ -42,5 +42,5 @@ jobs:
         with:
           command: |
             caf_route_to_local_k8s.sh &
-            echo "Attempting to curl kube-dns metrics endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 5 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics && echo "kube-dns metrics endpoint is reachable."
+            echo "Attempting to curl kube-dns metrics endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 kube-dns.kube-system.svc.cluster.local:9153/metrics && echo "kube-dns metrics endpoint is reachable."
           version: ref:${{ github.sha }}
