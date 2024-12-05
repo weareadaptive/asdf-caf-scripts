@@ -50,10 +50,8 @@ jobs:
     steps:
       - name: Activate DIRENV
         run: |
-          echo "use asdf" > .envrc
-          direnv allow .envrc
+          asdf direnv local
           echo $PATH
-
 
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
