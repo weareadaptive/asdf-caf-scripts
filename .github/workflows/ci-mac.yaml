@@ -1,31 +1,58 @@
 ---
-name: ASDF CAF Scripts tests - Linux
+name: ASDF CAF Scripts tests - MacOS
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-  # pull_request:
-  #   branches: ["*"]
+  pull_request:
+    branches: ["*"]
 
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
-  test-asdf-caf-scripts-linux:
-    runs-on: ubuntu-latest
-    env:
-      MINIKUBE_VERSION: "v1.34.0"
-      CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
-      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "15"
-
+  pre-clean:
+    runs-on: caf-adaptive-mac
     steps:
-      - name: Install Minikube
+      - name: Reset OrbStack
         run: |
-          # Install Minikube
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/${{ env.MINIKUBE_VERSION }}/minikube-linux-amd64
-          chmod +x minikube && mv minikube /usr/local/bin/
+          echo "Resetting OrbStack and deleting all data..."
+          if orb reset -y; then
+            echo "Done"
+          else
+            echo "Failed to reset OrbStack."
+            exit 1
+          fi
+      - name: Start OrbStack
+        run: |
+          success=false
+          echo "Starting OrbStack..."
+          for i in {1..5}; do
+            if orb start; then
+              echo "OrbStack successfully started."
+              success=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$success" = false ]; then
+            echo "Failed to start OrbStack after 5 attempts."
+            exit 1
+          fi
+      
+  test-asdf-caf-scripts-mac:
+    runs-on: caf-adaptive-mac
+    needs: pre-clean
+    env:
+      CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
+    steps:
+      - name: Activate DIRENV
+        run: |
+          cd /Users/operate
+          asdf direnv local
+          echo $PATH
 
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
