@@ -58,7 +58,7 @@ jobs:
 
       - name: Testing
         run: |
-          export $PATH=${{ env.TEST_PATH }}
+          export PATH=${{ env.TEST_PATH }}
           echo $PATH
 
       # - name: Test caf_create_local_k8s.sh
