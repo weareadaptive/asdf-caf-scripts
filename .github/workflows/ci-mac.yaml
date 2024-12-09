@@ -55,6 +55,7 @@ jobs:
           direnv export zsh > /tmp/test.log
           echo '------------'
           cat /tmp/test.log
+          echo $(grep -o 'export PATH=.*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')
 
       # - name: Testing
       #   run: |
