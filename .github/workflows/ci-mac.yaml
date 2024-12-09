@@ -73,5 +73,6 @@ jobs:
         with:
           command: |
             echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
-            echo "Attempting to curl ingress-controller healthz endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
+            curl --connect-timeout=2 --retry 3 --retry-delay 1 http://www.adaptive.local/healthz
+            # echo "Attempting to curl ingress-controller healthz endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
           version: ref:${{ github.sha }}
