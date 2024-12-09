@@ -195,4 +195,4 @@ fi
 
 # We have to define to functions we've declared inside the sudo session dynamically
 # As we must have the running sudo session active for the cleanup to be guarenteed to work
-sudo -E bash -c "$(declare -f f_cleanup_routing); $(declare -f f_add_routing); f_add_routing"
+sudo -S -E bash -c "$(declare -f f_cleanup_routing); $(declare -f f_add_routing); f_add_routing"
