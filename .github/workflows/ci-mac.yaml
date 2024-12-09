@@ -51,10 +51,9 @@ jobs:
       - name: Activate DIRENV
         run: |
           # Extract the PATH variable from the previous step's output
-          # TEST_PATH=$(direnv export zsh)
           direnv export zsh > /tmp/test.log
-          echo "PATH=$(grep -o 'export PATH=.*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
-          # echo "TEST2_PATH=$(grep -o 'export PATH=\$[^;]*' /tmp/test.log | sed 's/export PATH=\$//' | sed 's/;.*//')" >> $GITHUB_ENV
+          # echo "PATH=$(grep -o 'export PATH=.*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
+          echo "PATH=$(direnv export zsh | grep -o 'export PATH=.*' | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
 
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
@@ -62,16 +61,16 @@ jobs:
           command: caf_create_local_k8s.sh
           version: ref:${{ github.sha }}
 
-      # - name: Install Ingress NGINX
-      #   run: |
-      #     helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
-      #     --namespace nginx-ingress --create-namespace \
-      #     --set-json 'controller.service.labels={"caf/is-ingress-controller": "true"}'
+      - name: Install Ingress NGINX
+        run: |
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
+          --namespace nginx-ingress --create-namespace \
+          --set-json 'controller.service.labels={"caf/is-ingress-controller": "true"}'
 
-      # - name: Test caf_route_to_local_k8s.sh
-      #   uses: asdf-vm/actions/plugin-test@v3
-      #   with:
-      #     command: |
-      #       echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
-      #       echo "Attempting to curl ingress-controller healthz endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
-      #     version: ref:${{ github.sha }}
+      - name: Test caf_route_to_local_k8s.sh
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: |
+            echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
+            echo "Attempting to curl ingress-controller healthz endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
+          version: ref:${{ github.sha }}
