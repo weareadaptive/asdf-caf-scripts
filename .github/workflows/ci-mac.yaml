@@ -53,13 +53,8 @@ jobs:
           # Extract the PATH variable from the previous step's output
           # TEST_PATH=$(direnv export zsh)
           direnv export zsh > /tmp/test.log
-          echo "TEST_PATH=$(grep -o 'export PATH=.*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
-          echo "TEST2_PATH=$(grep -o 'export PATH=\$[^;]*' /tmp/test.log | sed 's/export PATH=\$//' | sed 's/;.*//')" >> $GITHUB_ENV
-
-      - name: Testing
-        run: |
-          export PATH=${{ env.TEST_PATH }}
-          echo $PATH
+          echo "PATH=$(grep -o 'export PATH=.*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
+          # echo "TEST2_PATH=$(grep -o 'export PATH=\$[^;]*' /tmp/test.log | sed 's/export PATH=\$//' | sed 's/;.*//')" >> $GITHUB_ENV
 
       - name: Test caf_create_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
