@@ -166,7 +166,7 @@ function f_add_routing() {
 
   echo "Press ctrl-c to exit"
   # We don't use 'infinity' as Macs don't support it
-  sleep ${CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT:-99999999}
+  sleep ${CAF_ROUTE_TO_LOCAL_K8S_DURATION:-99999999}
 }
 
 # What config do we have already in coredns?
