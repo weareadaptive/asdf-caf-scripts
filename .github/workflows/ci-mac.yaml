@@ -57,6 +57,7 @@ jobs:
           # TEST_PATH=$(direnv export zsh | awk -F'=' '/export PATH/ {print $2}' | tr -d "'" |  sed 's/;.*//')
           # echo "Extracted PATH: $TEST_PATH |  sed 's/;.*//')
           echo "TEST: $TEST2_PATH"
+          echo "$DIRENV_DIR: $DIRENV_DIR"
           # # Set the PATH variable for succeeding actions
           # echo "PATH=$PATH" >> $GITHUB_ENV
 
