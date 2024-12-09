@@ -54,7 +54,8 @@ jobs:
           # TEST_PATH=$(direnv export zsh)
           direnv export zsh > /tmp/test.log
           echo '------------'
-          export PATH=$(grep -o 'export PATH=\$[^;].*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//') >> $GITHUB_ENV
+          echo "export PATH=$(grep -o 'export PATH=\$[^;].*' /tmp/test.log | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
+          echo $PATH
 
       - name: Testing
         run: |
