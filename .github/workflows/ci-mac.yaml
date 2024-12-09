@@ -47,7 +47,7 @@ jobs:
     needs: pre-clean
     env:
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
-      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "15"
+      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "30"
     steps:
       - name: Activate DIRENV
         run: |
@@ -73,6 +73,5 @@ jobs:
         with:
           command: |
             echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
-            curl --retry 3 --retry-delay 1 "http://www.adaptive.local/healthz"
-            # echo "Attempting to curl ingress-controller healthz endpoint..." && curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
+            curl --retry 3 --retry-delay 4 "http://www.adaptive.local/healthz"
           version: ref:${{ github.sha }}
