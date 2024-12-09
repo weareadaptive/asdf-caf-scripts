@@ -51,10 +51,10 @@ jobs:
       - name: Activate DIRENV
         run: |
           # Extract the PATH variable from the previous step's output
-          PATH=$(direnv export zsh | grep -oP 'export PATH=\$[^;]+' | sed 's/export PATH=\$//')
-          echo "Extracted PATH: $PATH"
-          # Set the PATH variable for succeeding actions
-          echo "PATH=$PATH" >> $GITHUB_ENV
+          TEST_PATH=$(direnv export zsh | grep -oP 'export PATH=\$[^;]+' | sed 's/export PATH=\$//')
+          echo "Extracted PATH: $TEST_PATH"
+          # # Set the PATH variable for succeeding actions
+          # echo "PATH=$PATH" >> $GITHUB_ENV
 
       - name: Testing
         run: |
