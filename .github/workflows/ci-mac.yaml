@@ -50,9 +50,15 @@ jobs:
     steps:
       - name: Activate DIRENV
         run: |
-          direnv export zsh
-          echo "---------------"
-          echo -e "PATH: ${PATH}"
+          # Extract the PATH variable from the previous step's output
+          PATH=$(direnv export zsh | grep -oP 'export PATH=\$[^;]+' | sed 's/export PATH=\$//')
+          echo "Extracted PATH: $PATH"
+          # Set the PATH variable for succeeding actions
+          echo "PATH=$PATH" >> $GITHUB_ENV
+
+      - name: Testing
+        run: |
+          echo $PATH
 
       # - name: Test caf_create_local_k8s.sh
       #   uses: asdf-vm/actions/plugin-test@v3
