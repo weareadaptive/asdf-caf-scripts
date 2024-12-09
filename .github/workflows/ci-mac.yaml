@@ -51,7 +51,7 @@ jobs:
       - name: Activate DIRENV
         run: |
           cd /Users/operate
-          eval "$(direnv hook zsh)"
+          direnv hook zsh
           asdf direnv local
           echo $PATH
 
