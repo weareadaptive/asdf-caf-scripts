@@ -51,7 +51,7 @@ jobs:
       - name: Activate DIRENV
         run: |
           # Extract the PATH variable from the previous step's output
-          TEST_PATH=$(direnv export zsh | awk -F'=' '/export PATH/ {print $2}' | tr -d "'")
+          TEST_PATH=$(direnv export zsh | awk -F'=' '/export PATH/ {print $1}' | tr -d "'")
           echo "Extracted PATH: $TEST_PATH"
           # # Set the PATH variable for succeeding actions
           # echo "PATH=$PATH" >> $GITHUB_ENV
