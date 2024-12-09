@@ -73,5 +73,5 @@ jobs:
         with:
           command: |
             echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
-            curl --retry 5 --retry-delay 5 "www.adaptive.local/healthz"
+            curl --retry 5 --retry-delay 5 www.adaptive.local/healthz
           version: ref:${{ github.sha }}
