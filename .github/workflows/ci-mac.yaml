@@ -53,6 +53,7 @@ jobs:
           # Extract the PATH variable from the previous step's output
           # TEST_PATH=$(direnv export zsh)
           direnv export zsh > /tmp/test.log
+          echo '------------'
           cat /tmp/test.log
 
       # - name: Testing
