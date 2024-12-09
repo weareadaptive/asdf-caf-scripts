@@ -51,7 +51,8 @@ jobs:
       - name: Activate DIRENV
         run: |
           direnv export zsh
-          echo $PATH
+          echo "---------------"
+          echo -e "PATH: ${PATH}"
 
       # - name: Test caf_create_local_k8s.sh
       #   uses: asdf-vm/actions/plugin-test@v3
