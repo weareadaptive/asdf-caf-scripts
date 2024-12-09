@@ -47,7 +47,7 @@ jobs:
     needs: pre-clean
     env:
       CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
-      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "30"
+      CAF_ROUTE_TO_LOCAL_K8S_TIMEOUT: "60"
     steps:
       - name: Activate DIRENV
         run: |
@@ -73,5 +73,5 @@ jobs:
         with:
           command: |
             echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
-            curl --retry 3 --retry-delay 5 "www.adaptive.local/healthz"
+            curl --retry 5 --retry-delay 5 "www.adaptive.local/healthz"
           version: ref:${{ github.sha }}
