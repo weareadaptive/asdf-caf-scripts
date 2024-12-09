@@ -53,8 +53,9 @@ jobs:
           # Extract the PATH variable from the previous step's output
           # TEST_PATH=$(direnv export zsh)
           echo "export TEST2_PATH=$PATH" >> .envrc
-          TEST_PATH=$(direnv export zsh | awk -F'=' '/export PATH/ {print $2}' | tr -d "'" |  sed 's/;.*//')
-          echo "Extracted PATH: $TEST_PATH |  sed 's/;.*//')
+          direnv export zsh
+          # TEST_PATH=$(direnv export zsh | awk -F'=' '/export PATH/ {print $2}' | tr -d "'" |  sed 's/;.*//')
+          # echo "Extracted PATH: $TEST_PATH |  sed 's/;.*//')
           echo "TEST: $TEST2_PATH"
           # # Set the PATH variable for succeeding actions
           # echo "PATH=$PATH" >> $GITHUB_ENV
