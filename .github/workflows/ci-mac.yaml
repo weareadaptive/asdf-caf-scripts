@@ -1,0 +1,78 @@
+---
+name: ASDF CAF Scripts tests - MacOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["*"]
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  pre-clean:
+    runs-on: caf-adaptive-mac
+    steps:
+      - name: Reset OrbStack
+        run: |
+          echo "Resetting OrbStack and deleting all data..."
+          if orb reset -y; then
+            echo "Done"
+          else
+            echo "Failed to reset OrbStack."
+            exit 1
+          fi
+      - name: Start OrbStack
+        run: |
+          success=false
+          echo "Starting OrbStack..."
+          for i in {1..5}; do
+            if orb start; then
+              echo "OrbStack successfully started."
+              success=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$success" = false ]; then
+            echo "Failed to start OrbStack after 5 attempts."
+            exit 1
+          fi
+      - name: Cleanup /etc/resolver files
+        run: |
+          echo ${{ secrets.OPERATE_PWD }} | sudo -S rm /etc/resolver/*.local
+      
+  test-asdf-caf-scripts-mac:
+    runs-on: caf-adaptive-mac
+    needs: pre-clean
+    env:
+      CAF_LCL_K8S_MEMORY: "8" #Limit the amount of memory we use since runners have limited resources
+      CAF_ROUTE_TO_LOCAL_K8S_DURATION: "30"
+    steps:
+      - name: Activate DIRENV
+        run: |
+          # Extract the PATH variable from the previous step's output
+          echo "PATH=$(direnv export zsh | grep -o 'export PATH=.*' | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
+
+      - name: Test caf_create_local_k8s.sh
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: caf_create_local_k8s.sh
+          version: ref:${{ github.sha }}
+
+      - name: Install Ingress NGINX
+        run: |
+          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
+          --namespace nginx-ingress --create-namespace \
+          --set-json 'controller.service.labels={"caf/is-ingress-controller": "true"}'
+
+      - name: Test caf_route_to_local_k8s.sh
+        uses: asdf-vm/actions/plugin-test@v3
+        with:
+          command: |
+            echo ${{ secrets.OPERATE_PWD }} | caf_route_to_local_k8s.sh &
+            curl -s -o /dev/null --connect-timeout 5 --retry 3 --retry-all-errors --retry-delay 5 http://www.adaptive.local/healthz && echo "Ingress controller healthz endpoint is reachable."
+          version: ref:${{ github.sha }}
