@@ -57,7 +57,7 @@ jobs:
       - name: Activate DIRENV
         run: |
           # Extract the PATH variable from the previous step's output
-          # echo "PATH=$(direnv export zsh | grep -o 'export PATH=.*' | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
+          echo "PATH=$(direnv export zsh | grep -o 'export PATH=.*' | sed 's/export PATH=//' | sed 's/;.*//')" >> $GITHUB_ENV
           direnv allow .
 
       - name: Test caf_create_local_k8s.sh
