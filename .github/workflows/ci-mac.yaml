@@ -43,7 +43,9 @@ jobs:
           fi
       - name: Cleanup /etc/resolver files
         run: |
-          [ -n "$(ls -A /etc/resolver/*.local 2>/dev/null)" ] && echo ${{ secrets.OPERATE_PWD }} | sudo -S rm /etc/resolver/*.local
+          if ls /etc/resolver/*.local 1> /dev/null 2>&1; then
+            echo "${{ secrets.OPERATE_PWD }}" | sudo -S rm /etc/resolver/*.local
+          fi
 
   test-asdf-caf-scripts-mac:
     runs-on: caf-adaptive-mac
