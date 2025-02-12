@@ -43,8 +43,8 @@ jobs:
           fi
       - name: Cleanup /etc/resolver files
         run: |
-          echo ${{ secrets.OPERATE_PWD }} | sudo -S rm /etc/resolver/*.local
-      
+          [ -n "$(ls -A /etc/resolver/*.local 2>/dev/null)" ] && echo ${{ secrets.OPERATE_PWD }} | sudo -S rm /etc/resolver/*.local
+
   test-asdf-caf-scripts-mac:
     runs-on: caf-adaptive-mac
     needs: pre-clean
