@@ -5,10 +5,8 @@
 set -eo pipefail
 
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
-CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.31.0}"
+CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.33.1}"  # Default from Minikube 1.36.0
 CAF_RESTART_ORBSTACK=0
-
-yq --version
 
 # check for YQ
 if yq --version > /dev/null 2>&1
