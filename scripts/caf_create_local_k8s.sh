@@ -5,7 +5,9 @@
 set -eo pipefail
 
 CAF_LCL_K8S_MEMORY="${CAF_LCL_K8S_MEMORY:-16}"
-CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.33.1}"  # Default from Minikube 1.36.0
+CAF_LCL_K8S_VERSION="${CAF_LCL_K8S_VERSION:-v1.34.0}"
+CAF_LCL_K8S_MINIKUBE_DRIVER="${CAF_LCL_K8S_MINIKUBE_DRIVER:-docker}"
+CAF_LCL_K8S_MINIKUBE_RUNTIME="${CAF_LCL_K8S_MINIKUBE_RUNTIME:-docker}"
 CAF_RESTART_ORBSTACK=0
 
 # check for YQ
@@ -102,7 +104,8 @@ case ${OSTYPE} in
     else
       minikube start \
         --kubernetes-version="${CAF_LCL_K8S_VERSION}" \
-        --driver="docker" \
+        --driver="${CAF_LCL_K8S_MINIKUBE_DRIVER}" \
+        --container-runtime="${CAF_LCL_K8S_MINIKUBE_RUNTIME}" \
         --memory="${CAF_LCL_K8S_MEMORY}G" \
         --cpus="max" \
         --addons="registry,metrics-server" \
