@@ -96,6 +96,8 @@ if kubectl get ns nginx-ingress; then
   label="caf/is-ingress-controller=true"
 elif kubectl get ns emissary-ingress; then
   label="app.kubernetes.io/name=emissary-ingress"
+elif kubectl get ns traefik; then
+  label="app.kubernetes.io/name=traefik"
 else
   echo "Unable to create a route to K8s: unsupported ingress controller"
   exit 1
