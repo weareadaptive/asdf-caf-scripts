@@ -33,11 +33,12 @@ jobs:
           command: caf_create_local_k8s.sh
           version: ref:${{ github.sha }}
 
-      - name: Install Ingress NGINX
+      # Traefik requires minikube tunnel unless native Load Balancing is used
+      - name: Install Ingress Traefik
         run: |
-          helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
-          --namespace nginx-ingress --create-namespace \
-          --set-json 'controller.service.labels={"caf/is-ingress-controller": "true"}'
+          helm upgrade --install traefik traefik --repo https://traefik.github.io/charts \
+          --namespace traefik --create-namespace \
+          --set-json 'providers.kubernetesCRD.nativeLBByDefault=true,providers.kubernetesIngress.nativeLBByDefault=true,providers.kubernetesGateway.nativeLBByDefault=true'
 
       - name: Test caf_route_to_local_k8s.sh
         uses: asdf-vm/actions/plugin-test@v3
