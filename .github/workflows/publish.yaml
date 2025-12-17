@@ -1,0 +1,51 @@
+---
+name: Publish
+run-name: "🤖 Publish ${{ inputs.tag_name }} (via ${{ github.ref_name }})"
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        description: "branch, tag or SHA to publish"
+        type: string
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "branch, tag or SHA to publish"
+        type: string
+        required: true
+
+env:
+  CI: "true"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag_name }}
+
+      - name: Prepare
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Package
+        working-directory: ./scripts
+        shell: /bin/bash
+        run: |
+          tar -cvzf ../asdf-caf-scripts-${{ inputs.tag_name }}.tar.gz --group=root --owner=root --mode=u=rwx,go=rx --sort=name --no-acls --no-selinux --no-xattr *
+
+      - name: Attach to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ inputs.tag_name }} asdf-caf-scripts-${{ inputs.tag_name }}.tar.gz
