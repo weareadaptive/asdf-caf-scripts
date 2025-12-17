@@ -40,7 +40,8 @@ jobs:
 
       - name: Package
         working-directory: ./scripts
-        shell: /bin/bash
+        shell: bash
+        # Reproducible tar command
         run: |
           tar -cvzf ../asdf-caf-scripts-${{ inputs.tag_name }}.tar.gz --group=root --owner=root --mode=u=rwx,go=rx --sort=name --no-acls --no-selinux --no-xattr *
 
