@@ -167,8 +167,9 @@ function f_add_routing() {
   esac
 
   echo "Press ctrl-c to exit"
-  # We don't use 'infinity' as Macs don't support it
-  sleep ${CAF_ROUTE_TO_LOCAL_K8S_DURATION:-99999999}
+  # We don't use 'infinity' as Macs don't support it.
+  # Also ignore the non-zero return value when `sleep` is interrupted with ^C.
+  sleep ${CAF_ROUTE_TO_LOCAL_K8S_DURATION:-99999999} || true
 }
 
 # What config do we have already in coredns?
@@ -197,4 +198,4 @@ fi
 
 # We have to define to functions we've declared inside the sudo session dynamically
 # As we must have the running sudo session active for the cleanup to be guarenteed to work
-sudo -S -E bash -c "$(declare -f f_cleanup_routing); $(declare -f f_add_routing); f_add_routing"
+sudo -S -E bash -eo pipefail -c "$(declare -f f_cleanup_routing); $(declare -f f_add_routing); f_add_routing"
