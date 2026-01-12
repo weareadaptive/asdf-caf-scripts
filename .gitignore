@@ -1,0 +1,12 @@
+# IDE configuration
+.idea/
+.vscode/
+
+# Command output
+*.zip
+*.log
+
+# OS-specific rubbish
+*~
+.DS_Store
+._*
