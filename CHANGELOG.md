@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1](https://github.com/weareadaptive/asdf-caf-scripts/compare/v1.8.0...v1.8.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* memory calculation for Orbstack ([#21](https://github.com/weareadaptive/asdf-caf-scripts/issues/21)) ([c2a66cf](https://github.com/weareadaptive/asdf-caf-scripts/commit/c2a66cf56937d9e5841ee2e129d91dd57ac2b666))
+
 ## [1.8.0](https://github.com/weareadaptive/asdf-caf-scripts/compare/v1.7.0...v1.8.0) (2026-01-12)
 
 
